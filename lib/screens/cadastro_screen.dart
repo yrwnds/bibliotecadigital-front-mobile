@@ -39,16 +39,44 @@ class CadastroScreen extends StatelessWidget{
 
               ),
             ),
-            Center(
-              child: SizedBox(
-                height: 100,
-                child: Row(
-                  children: <Widget>[
-                    Text(
-                      "e acesse nosso catálogo gratuitamente.",
-                      style: TextStyle(fontSize: 15),
-                    ),
-                  ],
+           Container(
+             padding: const EdgeInsets.only(left: 15, top: 50, bottom: 50),
+             child: Row(
+               mainAxisAlignment: MainAxisAlignment.start,
+               children: [
+                 Text(
+                   "Cadastre sua conta e acesse sua biblioteca de graça!"
+                 )
+               ]
+             )
+           ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 15.0,
+                right: 15.0,
+                top: 15,
+                bottom: 10,
+              ),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Nome",
+                  hintText: "Fulano de tal"
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 15.0,
+                right: 15.0,
+                top: 15,
+                bottom: 10,
+              ),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Matrícula",
+                  hintText: "12345678"
                 ),
               ),
             ),
@@ -58,7 +86,7 @@ class CadastroScreen extends StatelessWidget{
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Email",
-                  hintText: "Exemplo: 123@gmail.com",
+                  hintText: "123@gmail.com",
                 ),
               ),
             ),

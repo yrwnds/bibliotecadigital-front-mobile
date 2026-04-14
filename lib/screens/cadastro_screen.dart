@@ -1,8 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CadastroScreen extends StatelessWidget{
+import '../core/auth_service.dart';
+
+class CadastroScreen extends StatefulWidget{
   const CadastroScreen({super.key});
+
+  @override
+  State<CadastroScreen> createState() => _CadastroScreenState();
+}
+
+class _CadastroScreenState extends State<CadastroScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final emailController = TextEditingController();
+
+  final passwordController = TextEditingController();
+
+  final nomeController = TextEditingController();
+
+  final matriculaController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +75,7 @@ class CadastroScreen extends StatelessWidget{
                 bottom: 10,
               ),
               child: TextFormField(
+                controller: nomeController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Nome",
@@ -73,6 +91,7 @@ class CadastroScreen extends StatelessWidget{
                 bottom: 10,
               ),
               child: TextFormField(
+                controller: matriculaController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Matrícula",
@@ -83,6 +102,7 @@ class CadastroScreen extends StatelessWidget{
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextFormField(
+                controller: emailController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Email",
@@ -98,6 +118,7 @@ class CadastroScreen extends StatelessWidget{
                 bottom: 10,
               ),
               child: TextFormField(
+                controller: passwordController,
                 obscureText: true,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
@@ -121,14 +142,18 @@ class CadastroScreen extends StatelessWidget{
                       ),
                       child: TextButton(
                         onPressed: () {
-                          print("screen apos login");
+                          bool valido =
+                              _formKey.currentState!.validate();
+                          if(valido){
+                            final user = AuthService().register();
+                          }
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Icon(Icons.login, size: 20, color: Colors.black),
                             const Text(
-                              "Login",
+                              "Criar conta",
                               style: TextStyle(color: Colors.black, fontSize: 20),
                             )
                           ],

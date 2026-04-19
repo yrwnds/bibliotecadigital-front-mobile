@@ -24,7 +24,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white70,
+      backgroundColor: Colors.white,
       appBar: AppBar(backgroundColor: Colors.white70),
       body: SingleChildScrollView(
         child: Column(
@@ -62,7 +62,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                mainAxisAlignment: MainAxisAlignment.start,
                children: [
                  Text(
-                   "Cadastre sua conta e acesse sua biblioteca de graça!"
+                   "Cadastre sua conta e acesse nosso catálogo!"
                  )
                ]
              )
@@ -72,14 +72,14 @@ class _CadastroScreenState extends State<CadastroScreen> {
                 left: 15.0,
                 right: 15.0,
                 top: 15,
-                bottom: 10,
+                bottom: 0,
               ),
               child: TextFormField(
                 controller: nomeController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Nome",
-                  hintText: "Fulano de tal"
+                  hintText: "Exemplo: Ana Silva"
                 ),
               ),
             ),
@@ -95,7 +95,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Matrícula",
-                  hintText: "12345678"
+                  hintText: "Exemplo: 12345678"
                 ),
               ),
             ),
@@ -106,7 +106,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Email",
-                  hintText: "123@gmail.com",
+                  hintText: "Exemplo: 123@gmail.com",
                 ),
               ),
             ),
@@ -145,7 +145,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                           bool valido =
                               _formKey.currentState!.validate();
                           if(valido){
-                            final user = AuthService().register();
+                           // final user = AuthService().register();
                           }
                         },
                         child: Row(

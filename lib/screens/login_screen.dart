@@ -10,7 +10,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white70,
+      backgroundColor: Colors.white,
       appBar: AppBar(backgroundColor: Colors.white70),
       body: SingleChildScrollView(
         child: Column(
@@ -60,7 +60,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "e acesse nosso catálogo gratuitamente.",
+                      "e acesse nosso catálogo!",
                       style: TextStyle(fontSize: 15),
                     ),
                   ],
@@ -116,7 +116,7 @@ class LoginScreen extends StatelessWidget {
                         Icon(Icons.login, size: 20, color: Colors.black),
                         const Text(
                           "Login",
-                          style: TextStyle(color: Colors.black, fontSize: 20),
+                          style: TextStyle(color: Colors.black, fontSize: 18),
                         )
                       ],
                     ),

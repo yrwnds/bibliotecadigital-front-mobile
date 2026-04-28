@@ -45,7 +45,7 @@ class AppDatabase {
       n_exemplares INTEGER,
       n_disponivel INTEGER
       
-      foreign key (categoria_id) references categorias(id)
+      FOREIGN KEY key (categoria_id) REFERENCES categorias(id)
       );
       
       CREATE TABLE emprestimo(
@@ -56,8 +56,8 @@ class AppDatabase {
       dataprazo  timestamptz,
       status     TEXT,
 
-      foreign key (livro_ISBN) references livros (ISBN),
-      foreign key (usuario_id) references usuarios (id)
+      FOREIGN KEY (livro_ISBN) REFERENCES livros (ISBN),
+      FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
       );
       ''');
       }

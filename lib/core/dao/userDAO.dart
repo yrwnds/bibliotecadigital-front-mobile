@@ -31,5 +31,14 @@ class userDao{
     return await db.delete('usuarios', where: 'id = ?', whereArgs: [id]);
   }
 
+  Future<List<User>> getUsers() async {
+    final db = await AppDatabase().database;
+    final result = await db.query(
+      'usuarios',
+      orderBy: 'nome ASC',
+    );
+    return result.map((e) => User.fromMap(e)).toList();
+  }
+
 
 }

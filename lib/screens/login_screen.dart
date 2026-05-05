@@ -1,11 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../core/auth_service.dart';
+import '../core/models/user.dart';
 import 'cadastro_screen.dart';
 import 'livro_screen.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  LoginScreen({super.key});
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -107,8 +114,22 @@ class LoginScreen extends StatelessWidget {
                     border: Border.all(width: 1),
                   ),
                   child: TextButton(
-                    onPressed: () {
-                      print("screen apos login");
+                    onPressed: () async{
+                      bool valido =
+                          _formKey.currentState!.validate();
+                          if (valido){
+                            final User? user = await AuthService().login(
+                              emailController.text, passwordController.text
+                            );
+                            if(user != null){
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LivroScreen(),
+                                ),
+                              );
+                            }
+                          }
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,

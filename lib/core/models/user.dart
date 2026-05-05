@@ -1,12 +1,12 @@
 class User{
-  final int id;
+  final int? id;
   final String nome;
   final String matricula;
   final String email;
   final String senha;
 
   User({
-    required this.id,
+    this.id,
     required this.nome,
     required this.matricula,
     required this.email,

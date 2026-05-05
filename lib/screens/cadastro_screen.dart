@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../core/auth_service.dart';
+import '../core/models/user.dart';
 
 class CadastroScreen extends StatefulWidget{
   const CadastroScreen({super.key});
@@ -141,11 +142,17 @@ class _CadastroScreenState extends State<CadastroScreen> {
                         border: Border.all(width: 1),
                       ),
                       child: TextButton(
-                        onPressed: () {
+                        onPressed: () async {
                           bool valido =
                               _formKey.currentState!.validate();
                           if(valido){
-                           // final user = AuthService().register();
+                            final newuser = User(matricula: matriculaController.text, senha: passwordController.text, nome: nomeController.text, email: emailController.text);
+                           final user = await AuthService().register(newuser);
+                           if(user){
+                             print("Salvou");
+                           } else{
+                             print("Erro");
+                           }
                           }
                         },
                         child: Row(

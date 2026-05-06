@@ -74,77 +74,90 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: TextFormField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Email",
-                  hintText: "Exemplo: 123@gmail.com",
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 15.0,
-                right: 15.0,
-                top: 15,
-                bottom: 10,
-              ),
-              child: TextFormField(
-                obscureText: true,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Senha",
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 20
-            ),
-            Padding(
-              padding: EdgeInsets.only(right: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [Container(
-                  height: 40,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(width: 1),
-                  ),
-                  child: TextButton(
-                    onPressed: () async{
-                      bool valido =
-                          _formKey.currentState!.validate();
-                          if (valido){
-                            final User? user = await AuthService().login(
-                              emailController.text, passwordController.text
-                            );
-                            if(user != null){
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => LivroScreen(),
-                                ),
-                              );
-                            }
-                          }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(Icons.login, size: 20, color: Colors.black),
-                        const Text(
-                          "Login",
-                          style: TextStyle(color: Colors.black, fontSize: 18),
-                        )
-                      ],
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  child: TextFormField(
+                    controller: emailController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "Email",
+                      hintText: "Exemplo: 123@gmail.com",
                     ),
                   ),
-                ),]
+                ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 15.0,
+                      right: 15.0,
+                      top: 15,
+                      bottom: 10,
+                    ),
+                    child: TextFormField(
+                      controller: passwordController,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: "Senha",
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                      height: 20
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(right: 15),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [Container(
+                            height: 40,
+                            width: 150,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(width: 1),
+                            ),
+                            child: TextButton(
+                              onPressed: () async{
+                                bool valido =
+                                _formKey.currentState!.validate();
+                                if (valido){
+                                  final User? user = await AuthService().login(
+                                      emailController.text, passwordController.text
+                                  );
+                                  if(user != null){
+                                    print("Entrou em navigator");
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => LivroScreen(),
+                                      ),
+                                    );
+                                  } else{
+                                    print("Erro user = null");
+                                  }
+                                } else{
+                                  print("Erro em valido");
+                                }
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Icon(Icons.login, size: 20, color: Colors.black),
+                                  const Text(
+                                    "Login",
+                                    style: TextStyle(color: Colors.black, fontSize: 18),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),]
+                      )
+                  )],
               )
             )
+
           ],
         ),
       ),

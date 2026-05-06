@@ -68,107 +68,113 @@ class _CadastroScreenState extends State<CadastroScreen> {
                ]
              )
            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 15.0,
-                right: 15.0,
-                top: 15,
-                bottom: 0,
-              ),
-              child: TextFormField(
-                controller: nomeController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Nome",
-                  hintText: "Exemplo: Ana Silva"
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [Padding(
+                  padding: const EdgeInsets.only(
+                    left: 15.0,
+                    right: 15.0,
+                    top: 15,
+                    bottom: 0,
+                  ),
+                  child: TextFormField(
+                    controller: nomeController,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: "Nome",
+                        hintText: "Exemplo: Ana Silva"
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 15.0,
-                right: 15.0,
-                top: 15,
-                bottom: 10,
-              ),
-              child: TextFormField(
-                controller: matriculaController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Matrícula",
-                  hintText: "Exemplo: 12345678"
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: TextFormField(
-                controller: emailController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Email",
-                  hintText: "Exemplo: 123@gmail.com",
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 15.0,
-                right: 15.0,
-                top: 15,
-                bottom: 10,
-              ),
-              child: TextFormField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Senha",
-                ),
-              ),
-            ),
-            SizedBox(
-                height: 20
-            ),
-            Padding(
-                padding: EdgeInsets.only(right: 15),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [Container(
-                      height: 40,
-                      width: 150,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(width: 1),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 15.0,
+                      right: 15.0,
+                      top: 15,
+                      bottom: 10,
+                    ),
+                    child: TextFormField(
+                      controller: matriculaController,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: "Matrícula",
+                          hintText: "Exemplo: 12345678"
                       ),
-                      child: TextButton(
-                        onPressed: () async {
-                          bool valido =
-                              _formKey.currentState!.validate();
-                          if(valido){
-                            final newuser = User(matricula: matriculaController.text, senha: passwordController.text, nome: nomeController.text, email: emailController.text);
-                           final user = await AuthService().register(newuser);
-                           if(user){
-                             print("Salvou");
-                           } else{
-                             print("Erro");
-                           }
-                          }
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(Icons.login, size: 20, color: Colors.black),
-                            const Text(
-                              "Criar conta",
-                              style: TextStyle(color: Colors.black, fontSize: 20),
-                            )
-                          ],
-                        ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: TextFormField(
+                      controller: emailController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: "Email",
+                        hintText: "Exemplo: 123@gmail.com",
                       ),
-                    ),]
-                )
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 15.0,
+                      right: 15.0,
+                      top: 15,
+                      bottom: 10,
+                    ),
+                    child: TextFormField(
+                      controller: passwordController,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: "Senha",
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                      height: 20
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(right: 15),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [Container(
+                            height: 40,
+                            width: 150,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(width: 1),
+                            ),
+                            child: TextButton(
+                              onPressed: () async {
+                                bool valido =
+                                _formKey.currentState!.validate();
+                                if(valido){
+                                  final newuser = User(matricula: matriculaController.text, senha: passwordController.text, nome: nomeController.text, email: emailController.text);
+                                  final user = await AuthService().register(newuser);
+                                  if(user){
+                                    print("Salvou");
+                                  } else{
+                                    print("Erro");
+                                  }
+                                }
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Icon(Icons.login, size: 20, color: Colors.black),
+                                  const Text(
+                                    "Criar conta",
+                                    style: TextStyle(color: Colors.black, fontSize: 20),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),]
+                      )
+                  )]
+              )
             )
+
           ],
         ),
       ),

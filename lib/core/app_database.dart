@@ -20,7 +20,7 @@ class AppDatabase {
   Future<Database> _initDatabase() async{
     final path = join(await getDatabasesPath(), 'bibliodigital.db');
     return openDatabase(path,
-      version: 1,
+      version: 2,
       onCreate: (db, version) async{
       await db.execute('''
       CREATE TABLE usuarios(
@@ -61,6 +61,44 @@ class AppDatabase {
       FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
       );
       ''');
+      },
+      onUpgrade: (db, oldVersion, newVersion) async{
+      if (oldVersion < 2) {
+        await db.execute(
+            '''
+            INSERT INTO categorias (nome) VALUES
+            ('Romance'),
+            ('Fantasia'),
+            ('Sci-fi'),
+            ('Terror'),
+            ('Biografia'),
+            ('Crime'),
+            ('Clássico'),
+            ('Literatura brasileira'),
+            ('Ficção Histórica'),
+            ('História'),
+            ('Filosofia'),
+            ('Psicologia'),
+            ('Infantil'),
+            ('Infanto-Juvenil'),
+            ('Auto-Ajuda'),
+            ('Poesia'),
+            ('Velho-Oeste'),
+            ('Religião'),
+            ('Ação');
+            
+            INSERT INTO livros (titulo, autor, anopublicado, categoria_id, linguagem, n_exemplares, n_disponivel)
+            VALUES ('Dom Casmurro', 'Machado de Assis', '1899', 8, 'Português', 5, 5),
+            ('A Hora da Estrela', 'Clarice Lispector', '1977', 8, 'Português', 5, 5),
+            ('A Paixão de Acordo com G.H.', 'Clarice Lispector', '1964', 8, 'Português', 5, 5),
+            ('The Complete Poems of Emily Dickinson', 'Emily Dickinson', '1890', 16, 'Inglês', 5, 5),
+            ('A Wizard of Earthsea', 'Ursula K Le Guin', '1968', 2, 'Inglês', 5, 5),
+            ('Crime and Punishment', 'Fyodor Dostoyevsky', '1866', 7, 'Inglês', 5, 5),
+            ('100 Años de Soledad', 'Gabriel García Marquez', '1967', 7, 'Espanhol', 5, 5);
+           
+            '''
+        );
+      }
       }
     );
   }

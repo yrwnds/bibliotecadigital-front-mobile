@@ -18,23 +18,29 @@ class AppDatabase {
   }
 
   Future<Database> _initDatabase() async{
-    final path = join(await getDatabasesPath(), 'bibliodigital.db');
+    final path = join(await getDatabasesPath(), 'biblioteca.db');
     return openDatabase(path,
-      version: 2,
+      version: 1,
       onCreate: (db, version) async{
       await db.execute('''
       CREATE TABLE usuarios(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       nome TEXT,
       matricula TEXT,
-      email TEXT,
+      email TEXT UNIQUE,
       senha TEXT
       );
-      
+      ''');
+
+      await db.execute(
+      '''
       CREATE TABLE categorias(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       nome TEXT);
-      
+      ''');
+
+      await db.execute(
+          '''
       CREATE TABLE livros(
       isbn INTEGER PRIMARY KEY AUTOINCREMENT,
       titulo TEXT,
@@ -43,12 +49,17 @@ class AppDatabase {
       
       categoria_id INTEGER,
       
+      linguagem TEXT, 
+      
       n_exemplares INTEGER,
-      n_disponivel INTEGER
+      n_disponivel INTEGER,
       
-      FOREIGN KEY key (categoria_id) REFERENCES categorias(id)
+      FOREIGN KEY (categoria_id) REFERENCES categorias(id)
       );
-      
+      ''');
+
+      await db.execute(
+        '''
       CREATE TABLE emprestimo(
       id         INTEGER PRIMARY KEY AUTOINCREMENT,
       livro_ISBN INTEGER,
@@ -61,10 +72,8 @@ class AppDatabase {
       FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
       );
       ''');
-      },
-      onUpgrade: (db, oldVersion, newVersion) async{
-      if (oldVersion < 2) {
-        await db.execute(
+
+      await db.execute(
             '''
             INSERT INTO categorias (nome) VALUES
             ('Romance'),
@@ -86,7 +95,10 @@ class AppDatabase {
             ('Velho-Oeste'),
             ('Religião'),
             ('Ação');
-            
+            ''');
+
+            await db.execute(
+            '''
             INSERT INTO livros (titulo, autor, anopublicado, categoria_id, linguagem, n_exemplares, n_disponivel)
             VALUES ('Dom Casmurro', 'Machado de Assis', '1899', 8, 'Português', 5, 5),
             ('A Hora da Estrela', 'Clarice Lispector', '1977', 8, 'Português', 5, 5),
@@ -95,10 +107,8 @@ class AppDatabase {
             ('A Wizard of Earthsea', 'Ursula K Le Guin', '1968', 2, 'Inglês', 5, 5),
             ('Crime and Punishment', 'Fyodor Dostoyevsky', '1866', 7, 'Inglês', 5, 5),
             ('100 Años de Soledad', 'Gabriel García Marquez', '1967', 7, 'Espanhol', 5, 5);
-           
             '''
         );
-      }
       }
     );
   }

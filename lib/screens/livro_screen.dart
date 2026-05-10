@@ -1,6 +1,4 @@
 import 'package:bibliotecadigital_mobile/core/models/livro.dart';
-import 'package:bibliotecadigital_mobile/core/models/user.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../core/dao/livroDAO.dart';
@@ -17,7 +15,7 @@ class _LivroScreenState extends State<LivroScreen>{
 
   bool loading = true;
 
-  getLivros() async {
+  Future<void> getLivros() async {
     loading = true;
     try {
       livros = await LivroDao().getLivros();

@@ -98,7 +98,7 @@ class _LivroScreenState extends State<LivroScreen>{
             BottomNavigationBarItem(icon: Icon(Icons.book), label: "Livros"),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: "Empréstimos"),
           ]),
-      drawer: Drawer(
+      drawer: Drawer( // card com nome do usuario
         child: ListView.builder(
           itemCount: categorias.length,
           itemBuilder: (context, index) {

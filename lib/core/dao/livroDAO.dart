@@ -1,4 +1,7 @@
+import 'package:bibliotecadigital_mobile/core/dao/categoriaDAO.dart';
+
 import '../app_database.dart';
+import '../models/categoria.dart';
 import '../models/livro.dart';
 
 class LivroDao{
@@ -34,8 +37,16 @@ class LivroDao{
     final db = await AppDatabase().database;
     final result = await db.query(
     'livros',
-    orderBy: 'nome ASC',
+    orderBy: 'titulo ASC',
     );
-    return result.map((e) => Livro.fromMap(e)).toList();
+    final List<Categoria> categorias = await CategoriaDao().getCategorias();
+    final List<Livro> livros = result.map((e) => Livro.fromMap(e)).toList();
+    livros.map(
+            (e) => e.categoria = categorias.firstWhere(
+                (c) => result.firstWhere(
+                    (r) => r["isbn"] == e.isbn)["categoria_id"] == c.id
+        )
+    );
+    return livros;
   }
 }

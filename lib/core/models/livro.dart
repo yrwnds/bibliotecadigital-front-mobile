@@ -9,7 +9,7 @@ class Livro{
   final int n_exemplares;
   final int n_disponiveis;
 
-  final Categoria categoria;
+   Categoria? categoria;
 
   Livro({
    required this.isbn,
@@ -18,7 +18,7 @@ class Livro{
    required this.anopublicado,
    required this.n_exemplares,
    required this.n_disponiveis,
-   required this.categoria
+    this.categoria
   });
 
   Map<String, dynamic> toMap(){
@@ -39,8 +39,8 @@ class Livro{
       titulo : map['titulo'],
       autor: map['autor'],
       anopublicado: map['anopublicado'],
-      n_exemplares: map['n_exemplares'],
-      n_disponiveis: map['n_disponiveis'],
+      n_exemplares: map['n_exemplares'] ?? 0,
+      n_disponiveis: map['n_disponiveis'] ?? 0,
       categoria: map['categoria'],
     );
   }

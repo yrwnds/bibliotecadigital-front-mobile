@@ -56,7 +56,7 @@ class _LivroScreenState extends State<LivroScreen>{
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('${livros[index].titulo} ${livros[index].anopublicado ?? ''}'),
-                        Text('${livros[index].autor} ${livros[index].categoria ?? ''}'),
+                        Text('${livros[index].autor} ${livros[index].categoria?.nome ?? ''}'),
                         Text('${livros[index].n_exemplares} ${livros[index].n_disponiveis ?? ''}'),
                         // button para realizar emprestimo aqui
                         // navbar para ver livros que ja foram emprestados

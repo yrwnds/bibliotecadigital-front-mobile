@@ -1,9 +1,9 @@
+import 'package:bibliotecadigital_mobile/screens/home-screen.dart';
 import 'package:flutter/material.dart';
 
 import '../core/auth_service.dart';
 import '../core/models/user.dart';
 import 'cadastro_screen.dart';
-import 'livro_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -130,7 +130,7 @@ class LoginScreen extends StatelessWidget {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => LivroScreen(),
+                                        builder: (context) => HomeScreen(),
                                       ),
                                     );
                                   } else{

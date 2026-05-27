@@ -1,3 +1,4 @@
+import 'package:bibliotecadigital_mobile/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../core/auth_service.dart';
@@ -152,6 +153,10 @@ class _CadastroScreenState extends State<CadastroScreen> {
                                   final user = await AuthService().register(newuser);
                                   if(user){
                                     print("Salvou");
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (_) => LoginScreen()),
+                                    );
                                   } else{
                                     print("Erro");
                                   }

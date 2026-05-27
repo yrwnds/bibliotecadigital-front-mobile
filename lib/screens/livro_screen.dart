@@ -9,19 +9,21 @@ import '../core/dao/categoriaDAO.dart';
 import '../core/dao/livroDAO.dart';
 import '../core/dao/userDAO.dart';
 
-class  LivroScreen extends StatefulWidget {
+class LivroScreen extends StatefulWidget {
   const LivroScreen({super.key});
 
   @override
   State<LivroScreen> createState() => _LivroScreenState();
 }
 
-class _LivroScreenState extends State<LivroScreen>{
+class _LivroScreenState extends State<LivroScreen> {
   List<Livro> livros = [];
   List<Categoria> categorias = [];
 
   bool loading = true;
 
+  var cardImage = NetworkImage(
+      'https://png.pngtree.com/png-vector/20210604/ourmid/pngtree-gray-network-placeholder-png-image_3416659.jpg');
 
 
   Future<void> getLivros() async {
@@ -34,7 +36,7 @@ class _LivroScreenState extends State<LivroScreen>{
     setState(() {});
   }
 
-  Future<void> getCategorias() async{
+  Future<void> getCategorias() async {
     loading = true;
     try {
       categorias = await CategoriaDao().getCategorias();
@@ -44,6 +46,7 @@ class _LivroScreenState extends State<LivroScreen>{
     setState(() {});
   }
 
+
   @override
   void initState() {
     super.initState();
@@ -52,65 +55,73 @@ class _LivroScreenState extends State<LivroScreen>{
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Livros'),
-        backgroundColor: Colors.white,
-      ),
-      body: loading ? Center(child: CircularProgressIndicator(color: Colors.blue))
-          : ListView.builder(
-        itemCount: livros.length,
-        itemBuilder: (context, index) {
-          return
-            Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('${livros[index].titulo} ${livros[index].anopublicado ?? ''}'),
-                        Text('${livros[index].autor} ${livros[index].categoria?.nome ?? ''}'),
-                        Text('${livros[index].n_exemplares} ${livros[index].n_disponiveis ?? ''}'),
-                        TextButton(onPressed: () async {
-                          // logica para emprestimo aqui
-                        },
-                            child: const Text('Pegar emprestado')
-                        )
-               // navbar para ver livros que ja foram emprestados
-                      ],
-                    ),
-                  ],
-                ),
-              )
-            )
-          );
-        }
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-          currentIndex: 0,
-          items: [
-            BottomNavigationBarItem(icon: Icon(Icons.book), label: "Livros"),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Empréstimos"),
-          ]),
-      drawer: Drawer( // card com nome do usuario
-        child: ListView.builder(
-          itemCount: categorias.length,
+        appBar: AppBar(
+          title: Text('Livros'),
+          backgroundColor: Colors.white,
+        ),
+        body: loading ? Center(
+            child: CircularProgressIndicator(color: Colors.blue))
+            : ListView.builder(
+          itemCount: livros.length,
           itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-              child: TextButton(onPressed: () async {
-                // logica para filtrar por categoria aqui
-                 }, child: Text(categorias[index].nome))
-            );
+            return
+              Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 4.0),
+                  child: Card(
+                    elevation: 4,
+                    child: Column(
+                      children: [
+                        Container(
+                            height: 200,
+                            color: Colors.blue,
+                            child: Ink.image(
+                              image: cardImage,
+                              fit: BoxFit.cover
+                            )
+                        ),
+                        ListTile(
+                          title: Text(livros[index].titulo),
+                          subtitle: Text(livros[index].autor)),
+                        Container(
+                          padding: EdgeInsets.all(16),
+                          alignment: Alignment.bottomLeft,
+                          child: Column(
+                            children: [
+                              Text("Pub. ${livros[index].anopublicado}"),
+                              Text("${livros[index].n_disponiveis} de ${livros[index].n_exemplares}")
+                            ],
+                          )
+                        ),
+                        TextButton(
+                            onPressed: () async {
+                              // logica para emprestimo aqui
+                            },
+                            child: const Text('Pegar emprestado')
+
+                        )
+                      ]
+                    )
+                    ),
+                  );
           }
+        ),
+        drawer: Drawer( // card com nome do usuario
+            child: ListView.builder(
+                itemCount: categorias.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 4.0),
+                      child: TextButton(onPressed: () async {
+                        // logica para filtrar por categoria aqui
+                      }, child: Text(categorias[index].nome))
+                  );
+                }
+            )
         )
-      )
     );
   }
 }

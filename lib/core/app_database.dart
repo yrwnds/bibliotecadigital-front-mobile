@@ -18,7 +18,7 @@ class AppDatabase {
   }
 
   Future<Database> _initDatabase() async{
-    final path = join(await getDatabasesPath(), 'biblioteca.db');
+    final path = join(await getDatabasesPath(), 'bibliotecavirtual.db');
     return openDatabase(path,
       version: 1,
       onCreate: (db, version) async{
@@ -51,8 +51,8 @@ class AppDatabase {
       
       linguagem TEXT, 
       
-      n_exemplares INTEGER,
-      n_disponivel INTEGER,
+      n_exemplares INTEGER DEFAULT 5,
+      n_disponivel INTEGER DEFAULT 5,
       
       FOREIGN KEY (categoria_id) REFERENCES categorias(id)
       );

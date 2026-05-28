@@ -22,14 +22,21 @@ class _LivroScreenState extends State<LivroScreen> {
 
   bool loading = true;
 
-  var cardImage = NetworkImage(
-      'https://png.pngtree.com/png-vector/20210604/ourmid/pngtree-gray-network-placeholder-png-image_3416659.jpg');
-
 
   Future<void> getLivros() async {
     loading = true;
     try {
       livros = await LivroDao().getLivros();
+    } finally {
+      loading = false;
+    }
+    setState(() {});
+  }
+
+  Future<void> getLivrosCategoria(String catId) async {
+    loading = true;
+    try{
+      livros = await LivroDao().getLivrosCategoria(catId);
     } finally {
       loading = false;
     }
@@ -76,10 +83,10 @@ class _LivroScreenState extends State<LivroScreen> {
                       children: [
                         Container(
                             height: 200,
+                            width: double.infinity,
                             color: Colors.blue,
-                            child: Ink.image(
-                              image: cardImage,
-                              fit: BoxFit.cover
+                            child: Icon(
+                              Icons.book
                             )
                         ),
                         ListTile(
@@ -97,7 +104,7 @@ class _LivroScreenState extends State<LivroScreen> {
                         ),
                         TextButton(
                             onPressed: () async {
-                              // logica para emprestimo aqui
+                              // logica criar emprestimo
                             },
                             child: const Text('Pegar emprestado')
 
@@ -109,17 +116,35 @@ class _LivroScreenState extends State<LivroScreen> {
           }
         ),
         drawer: Drawer( // card com nome do usuario
-            child: ListView.builder(
-                itemCount: categorias.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0, vertical: 4.0),
-                      child: TextButton(onPressed: () async {
-                        // logica para filtrar por categoria aqui
-                      }, child: Text(categorias[index].nome))
-                  );
-                }
+            child: Column(
+              children: [
+                Padding(
+                  padding:  const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 4.0),
+                  child: DrawerHeader(
+                    child: UserAccountsDrawerHeader(accountName: Text('Username'), accountEmail: Text('Email'))
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                horizontal: 16.0, vertical: 4.0),
+                  child: TextButton(onPressed: () async {
+                    getLivros();
+                  }, child: Text("Todos")),
+                ),
+                ListView.builder(
+                    itemCount: categorias.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 4.0),
+                          child: TextButton(onPressed: () async {
+                            getLivrosCategoria("${categorias[index].id}");
+                          }, child: Text(categorias[index].nome))
+                      );
+                    }
+                )
+              ],
             )
         )
     );

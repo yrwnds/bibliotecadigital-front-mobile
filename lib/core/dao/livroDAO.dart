@@ -4,27 +4,48 @@ import '../app_database.dart';
 import '../models/categoria.dart';
 import '../models/livro.dart';
 
-class LivroDao{
+class LivroDao {
   static const String table = 'livros';
 
-  Future<int> insertLivro (Livro livro) async{
+  Future<int> insertLivro(Livro livro) async {
     final db = await AppDatabase().database;
     return db.insert(table, livro.toMap());
   }
 
   Future<Livro?> getLivro(int isbn) async {
     final db = await AppDatabase().database;
-    final result = await db.query(
-      table,
-      where: 'isbn = ?',
-      whereArgs : [isbn],
-    );
+    final result = await db.query(table, where: 'isbn = ?', whereArgs: [isbn]);
     return result.isNotEmpty ? Livro.fromMap(result.first) : null;
   }
 
-  Future<int> updateLivro(Livro livro) async{
+  Future<List<Livro>> getLivrosCategoria(String catId) async {
     final db = await AppDatabase().database;
-    final result = await db.update(table, livro.toMap(), where: 'isbn = ?', whereArgs: [livro.isbn]);
+
+    final result = await db.query(
+      'livros',
+      where: 'categoria_id = ?',
+      whereArgs: [catId],
+    );
+    final List<Categoria> categorias = await CategoriaDao().getCategorias();
+    final List<Livro> livros = result.map((e) => Livro.fromMap(e)).toList();
+    livros.map(
+      (e) => e.categoria = categorias.firstWhere(
+        (c) =>
+            result.firstWhere((r) => r["isbn"] == e.isbn)["categoria_id"] ==
+            c.id,
+      ),
+    );
+    return livros;
+  }
+
+  Future<int> updateLivro(Livro livro) async {
+    final db = await AppDatabase().database;
+    final result = await db.update(
+      table,
+      livro.toMap(),
+      where: 'isbn = ?',
+      whereArgs: [livro.isbn],
+    );
     return result;
   }
 
@@ -35,17 +56,15 @@ class LivroDao{
 
   Future<List<Livro>> getLivros() async {
     final db = await AppDatabase().database;
-    final result = await db.query(
-    'livros',
-    orderBy: 'titulo ASC',
-    );
+    final result = await db.query('livros', orderBy: 'titulo ASC');
     final List<Categoria> categorias = await CategoriaDao().getCategorias();
     final List<Livro> livros = result.map((e) => Livro.fromMap(e)).toList();
     livros.map(
-            (e) => e.categoria = categorias.firstWhere(
-                (c) => result.firstWhere(
-                    (r) => r["isbn"] == e.isbn)["categoria_id"] == c.id
-        )
+      (e) => e.categoria = categorias.firstWhere(
+        (c) =>
+            result.firstWhere((r) => r["isbn"] == e.isbn)["categoria_id"] ==
+            c.id,
+      ),
     );
     return livros;
   }

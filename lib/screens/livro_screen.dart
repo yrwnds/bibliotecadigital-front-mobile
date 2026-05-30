@@ -4,10 +4,11 @@ import 'package:bibliotecadigital_mobile/core/models/livro.dart';
 import 'package:bibliotecadigital_mobile/core/models/user.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easy_search_bar/flutter_easy_search_bar.dart';
 
 import '../core/dao/categoriaDAO.dart';
+import '../core/dao/emprestimoDAO.dart';
 import '../core/dao/livroDAO.dart';
-import '../core/dao/userDAO.dart';
 
 class LivroScreen extends StatefulWidget {
   const LivroScreen({super.key});
@@ -19,9 +20,53 @@ class LivroScreen extends StatefulWidget {
 class _LivroScreenState extends State<LivroScreen> {
   List<Livro> livros = [];
   List<Categoria> categorias = [];
-
+  User usulogado = User(nome: '', matricula: '', email: '', senha: '');
   bool loading = true;
 
+  void showSuccessDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Row(
+            children: [
+              Icon(Icons.check_circle, color: Colors.green, size: 28),
+              SizedBox(width: 10),
+              Text('Sucesso!'),
+            ],
+          ),
+          content: const Text('O empréstimo foi realizado com sucesso.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK', style: TextStyle(color: Colors.green)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showErrorAlert(BuildContext context, String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Erro ocorreu.'),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<void> getLivros() async {
     loading = true;
@@ -35,7 +80,7 @@ class _LivroScreenState extends State<LivroScreen> {
 
   Future<void> getLivrosCategoria(String catId) async {
     loading = true;
-    try{
+    try {
       livros = await LivroDao().getLivrosCategoria(catId);
     } finally {
       loading = false;
@@ -52,101 +97,144 @@ class _LivroScreenState extends State<LivroScreen> {
     }
     setState(() {});
   }
+  
+  Future<void> getLivroSearch(String param) async{
+    loading = true;
+    try {
+      livros = await LivroDao().getLivrosSearch(param);
+    } finally {
+      loading = false;
+    }
+    setState(() {});
+  }
 
+  Future<void> getUsuLogado() async {
+    loading = true;
+    try {
+      // get usuario
+    } finally {
+      loading = false;
+    }
+    setState(() {});
+  }
 
   @override
   void initState() {
     super.initState();
     getLivros();
     getCategorias();
+    getUsuLogado();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Livros'),
-          backgroundColor: Colors.white,
-        ),
-        body: loading ? Center(
-            child: CircularProgressIndicator(color: Colors.blue))
-            : ListView.builder(
-          itemCount: livros.length,
-          itemBuilder: (context, index) {
-            return
-              Padding(
+      appBar: EasySearchBar(title: const Text('Livros'), onSearch: (value) => getLivroSearch(value), backgroundColor: Colors.white,),
+      body: loading
+          ? Center(child: CircularProgressIndicator(color: Colors.blue))
+          : ListView.builder(
+              itemCount: livros.length,
+              itemBuilder: (context, index) {
+                return Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 4.0),
+                    horizontal: 16.0,
+                    vertical: 4.0,
+                  ),
                   child: Card(
                     elevation: 4,
                     child: Column(
                       children: [
                         Container(
-                            height: 200,
-                            width: double.infinity,
-                            color: Colors.blue,
-                            child: Icon(
-                              Icons.book
-                            )
+                          height: 200,
+                          width: double.infinity,
+                          color: Colors.purple,
+                          child: Icon(Icons.book),
                         ),
                         ListTile(
                           title: Text(livros[index].titulo),
-                          subtitle: Text(livros[index].autor)),
+                          subtitle: Text(livros[index].autor),
+                        ),
                         Container(
                           padding: EdgeInsets.all(16),
                           alignment: Alignment.bottomLeft,
                           child: Column(
                             children: [
-                              Text("Pub. ${livros[index].anopublicado}"),
-                              Text("${livros[index].n_disponiveis} de ${livros[index].n_exemplares}")
+                              Text(
+                                "Pub. ${livros[index].anopublicado}",
+                                textAlign: TextAlign.left,
+                              ),
+                              Text(
+                                "${livros[index].n_disponivel} de ${livros[index].n_exemplares} disponíveis",
+                                textAlign: TextAlign.left,
+                              ),
                             ],
-                          )
+                          ),
                         ),
                         TextButton(
-                            onPressed: () async {
-                              // logica criar emprestimo
-                            },
-                            child: const Text('Pegar emprestado')
-
-                        )
-                      ]
-                    )
+                          onPressed: livros[index].n_disponivel == 0
+                              ? null
+                              : () async {
+                                  try {
+                                    EmprestimoDao().insertEmprestimo(
+                                      livros[index],
+                                      usulogado,
+                                    );
+                                  } catch (error) {
+                                    showErrorAlert(
+                                      context,
+                                      "Ocorreu um erro - $error",
+                                    );
+                                  } finally {
+                                    showSuccessDialog(context);
+                                    setState(() {});
+                                  }
+                                },
+                          child: livros[index].n_disponivel == 0
+                              ? Text("Não há exemplares disponíveis")
+                              : Text("Pegar emprestado"),
+                        ),
+                      ],
                     ),
-                  );
-          }
-        ),
-        drawer: Drawer( // card com nome do usuario
-            child: Column(
-              children: [
-                Padding(
-                  padding:  const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 4.0),
-                  child: DrawerHeader(
-                    child: UserAccountsDrawerHeader(accountName: Text('Username'), accountEmail: Text('Email'))
+                  ),
+                );
+              },
+            ),
+      drawer: Drawer(
+        child: ListView.builder(
+          itemCount: categorias.length + 1,
+          itemBuilder: (context, index) {
+            if (index == categorias.length) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 4.0,
+                ),
+                child: TextButton(
+                  onPressed: () async {
+                    getLivros();
+                  },
+                  child: Text(
+                    "Todos",
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                horizontal: 16.0, vertical: 4.0),
-                  child: TextButton(onPressed: () async {
-                    getLivros();
-                  }, child: Text("Todos")),
-                ),
-                ListView.builder(
-                    itemCount: categorias.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 4.0),
-                          child: TextButton(onPressed: () async {
-                            getLivrosCategoria("${categorias[index].id}");
-                          }, child: Text(categorias[index].nome))
-                      );
-                    }
-                )
-              ],
-            )
-        )
+              );
+            }
+            return Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 4.0,
+              ),
+              child: TextButton(
+                onPressed: () async {
+                  getLivrosCategoria("${categorias[index].id}");
+                },
+                child: Text(categorias[index].nome),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

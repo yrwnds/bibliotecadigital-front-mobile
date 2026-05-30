@@ -1,23 +1,23 @@
 import 'categoria.dart';
 
 class Livro{
-  final int isbn;
+  final int? isbn;
   final String titulo;
   final String autor;
   final String anopublicado;
 
-  final int n_exemplares;
-  final int n_disponiveis;
+  int n_exemplares;
+  int n_disponivel;
 
    Categoria? categoria;
 
   Livro({
-   required this.isbn,
+   this.isbn,
    required this.titulo,
    required this.autor,
    required this.anopublicado,
    required this.n_exemplares,
-   required this.n_disponiveis,
+   required this.n_disponivel,
     this.categoria
   });
 
@@ -28,7 +28,7 @@ class Livro{
       'autor': autor,
       'anopublicado': anopublicado,
       'n_exemplares' : n_exemplares,
-      'n_disponiveis' : n_disponiveis,
+      'n_disponivel' : n_disponivel,
       'categoria' : categoria
     };
   }
@@ -40,7 +40,7 @@ class Livro{
       autor: map['autor'],
       anopublicado: map['anopublicado'],
       n_exemplares: map['n_exemplares'] ?? 0,
-      n_disponiveis: map['n_disponiveis'] ?? 0,
+      n_disponivel: map['n_disponivel'] ?? 0,
       categoria: map['categoria'],
     );
   }

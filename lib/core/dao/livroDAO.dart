@@ -18,6 +18,30 @@ class LivroDao {
     return result.isNotEmpty ? Livro.fromMap(result.first) : null;
   }
 
+  Future<List<Livro>> getLivrosSearch(String param) async {
+    final db = await AppDatabase().database;
+    final result = await db.rawQuery(
+      '''
+      SELECT * FROM livros WHERE
+      LOWER(titulo) LIKE ?
+      OR LOWER(autor) LIKE ?
+      OR anopublicado LIKE ?
+      OR isbn = ?
+      ''',
+      ['%${param.toLowerCase()}%', '%${param.toLowerCase()}%', '%${param.toLowerCase()}%', param.toLowerCase()]
+    );
+    final List<Livro> livros = result.map((e) => Livro.fromMap(e)).toList();
+    final List<Categoria> categorias = await CategoriaDao().getCategorias();
+    livros.map(
+        (e) => e.categoria = categorias.firstWhere(
+            (c) =>
+                result.firstWhere((r) => r["isbn"] == e.isbn)["categoria_id"] ==
+            c.id,
+        )
+    );
+    return livros;
+  }
+
   Future<List<Livro>> getLivrosCategoria(String catId) async {
     final db = await AppDatabase().database;
 

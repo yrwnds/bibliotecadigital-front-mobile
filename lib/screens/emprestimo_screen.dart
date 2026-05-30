@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class EmprestimoScreen extends StatefulWidget {
   const EmprestimoScreen ({super.key});
@@ -12,6 +13,6 @@ class EmprestimoScreen extends StatefulWidget {
 class _EmprestimoScreenState extends State<EmprestimoScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold();
   }
 }

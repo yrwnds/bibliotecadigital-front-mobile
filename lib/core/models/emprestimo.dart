@@ -4,7 +4,7 @@ import 'package:bibliotecadigital_mobile/core/models/user.dart';
 import 'livro.dart';
 
 class Emprestimo {
-  final int id;
+  final int? id;
   final Livro livro;
   final User usuario;
   final DateTime datapego;
@@ -12,7 +12,7 @@ class Emprestimo {
   final String status;
 
   Emprestimo({
-    required this.id,
+    this.id,
     required this.livro,
     required this.usuario,
     required this.datapego,

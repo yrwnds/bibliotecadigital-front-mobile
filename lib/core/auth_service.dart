@@ -16,7 +16,11 @@ class AuthService{
   }
 
   Future<User?> login(String email, String senha) async{
-    return await _userDAO.getUser(email, senha);
+    User? usuario = await _userDAO.getUser(email, senha);
+    if(usuario!=null){
+      // salvar usuarioid
+    }
+    return usuario;
   }
 
 }

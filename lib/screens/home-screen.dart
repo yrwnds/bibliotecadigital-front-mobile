@@ -6,13 +6,14 @@ import 'package:flutter/material.dart';
 class HomeScreen extends StatefulWidget {
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 
 }
 
 class _HomeScreenState extends State<HomeScreen>{
 
   int _selectedIndex = 0;
+
   final List<Widget> _telas = [
     LivroScreen(),
     EmprestimoScreen()
@@ -25,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen>{
         currentIndex: _selectedIndex,
         onTap: (int index) {
             _selectedIndex = index;
+            setState(() {});
         },
         items: const<BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.book), label: "Livros"),

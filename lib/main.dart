@@ -4,7 +4,6 @@ import 'core/app_database.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await AppDatabase().database;
 
   runApp(const MyApp());

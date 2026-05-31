@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
 
+  final int userId;
+  const HomeScreen({super.key, required this.userId});
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 
@@ -13,11 +16,25 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>{
 
   int _selectedIndex = 0;
+  bool loading = true;
 
-  final List<Widget> _telas = [
-    LivroScreen(),
-    EmprestimoScreen()
-  ];
+  late final List<Widget> _telas;
+
+  @override
+  void initState(){
+    super.initState();
+    getTelas();
+  }
+
+  Future<void> getTelas() async{
+    loading = true;
+    try{
+      _telas = [LivroScreen(userId: widget.userId.toString()),
+        EmprestimoScreen(userId: widget.userId.toString())];
+    } finally{
+        loading = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context){
@@ -33,6 +50,6 @@ class _HomeScreenState extends State<HomeScreen>{
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Empréstimos"),
         ],
       ),
-      body: _telas[_selectedIndex]);
+      body: loading? Center(child: CircularProgressIndicator(color: Colors.blue)) : _telas[_selectedIndex]);
   }
 }

@@ -22,19 +22,19 @@ class Emprestimo {
   Map<String, dynamic> toMap(){
     return{
       'id' : id,
-      'livro' : id,
-      'usuario' : usuario,
-      'datapego' : datapego,
-      'dataprazo' : dataprazo,
+      'livro_ISBN' : livro.isbn,
+      'usuario_id' : usuario.id,
+      'datapego' : datapego.toString(),
+      'dataprazo' : dataprazo.toString(),
       'status' : status
     };
   }
 
   factory Emprestimo.fromMap(Map<String, dynamic> map){
     return Emprestimo(
-      id : map['id'],
-      livro: map['livro'],
-      usuario: map['usuario'],
+      id : map['emprestimo_id'] ?? map['id'],
+      livro: Livro.fromMap(map),
+      usuario: User.fromMap(map),
       datapego: map['datapego'],
       dataprazo: map['dataprazo'],
       status: map['status'],

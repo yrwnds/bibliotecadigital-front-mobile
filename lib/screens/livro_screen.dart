@@ -1,26 +1,35 @@
 import 'package:bibliotecadigital_mobile/core/auth_service.dart';
+import 'package:bibliotecadigital_mobile/core/dao/userDAO.dart';
 import 'package:bibliotecadigital_mobile/core/models/categoria.dart';
 import 'package:bibliotecadigital_mobile/core/models/livro.dart';
 import 'package:bibliotecadigital_mobile/core/models/user.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easy_search_bar/flutter_easy_search_bar.dart';
 
 import '../core/dao/categoriaDAO.dart';
 import '../core/dao/emprestimoDAO.dart';
 import '../core/dao/livroDAO.dart';
+import '../core/models/emprestimo.dart';
 
 class LivroScreen extends StatefulWidget {
-  const LivroScreen({super.key});
+
+  final String userId;
+
+  const LivroScreen({super.key, required this.userId});
 
   @override
   State<LivroScreen> createState() => _LivroScreenState();
 }
 
 class _LivroScreenState extends State<LivroScreen> {
+
   List<Livro> livros = [];
   List<Categoria> categorias = [];
-  User usulogado = User(nome: '', matricula: '', email: '', senha: '');
+  List<Emprestimo> emprestimos = [];
+
+  User? _usuLogado;
+
   bool loading = true;
 
   void showSuccessDialog(BuildContext context) {
@@ -68,6 +77,16 @@ class _LivroScreenState extends State<LivroScreen> {
     );
   }
 
+  Future<void> getEmprestimos() async {
+    loading = true;
+    try {
+      emprestimos = await EmprestimoDao().getEmprestimos();
+    } finally {
+      loading = false;
+    }
+    setState(() {});
+  }
+
   Future<void> getLivros() async {
     loading = true;
     try {
@@ -97,8 +116,8 @@ class _LivroScreenState extends State<LivroScreen> {
     }
     setState(() {});
   }
-  
-  Future<void> getLivroSearch(String param) async{
+
+  Future<void> getLivroSearch(String param) async {
     loading = true;
     try {
       livros = await LivroDao().getLivrosSearch(param);
@@ -111,11 +130,11 @@ class _LivroScreenState extends State<LivroScreen> {
   Future<void> getUsuLogado() async {
     loading = true;
     try {
-      // get usuario
+      _usuLogado = await userDao().getUserId(int.parse(widget.userId));
+      setState(() {});
     } finally {
       loading = false;
     }
-    setState(() {});
   }
 
   @override
@@ -124,12 +143,17 @@ class _LivroScreenState extends State<LivroScreen> {
     getLivros();
     getCategorias();
     getUsuLogado();
+    getEmprestimos();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: EasySearchBar(title: const Text('Livros'), onSearch: (value) => getLivroSearch(value), backgroundColor: Colors.white,),
+      appBar: EasySearchBar(
+        title: Text('Bem-vindo, ${_usuLogado?.nome}'),
+        onSearch: (value) => getLivroSearch(value),
+        backgroundColor: Colors.white,
+      ),
       body: loading
           ? Center(child: CircularProgressIndicator(color: Colors.blue))
           : ListView.builder(
@@ -175,15 +199,31 @@ class _LivroScreenState extends State<LivroScreen> {
                               ? null
                               : () async {
                                   try {
-                                    EmprestimoDao().insertEmprestimo(
-                                      livros[index],
-                                      usulogado,
-                                    );
-                                  } catch (error) {
-                                    showErrorAlert(
-                                      context,
-                                      "Ocorreu um erro - $error",
-                                    );
+                                    bool jaPego = false;
+                                    for (var emp in emprestimos) {
+                                      if (livros[index] == emp.livro &&
+                                          _usuLogado == emp.usuario &&
+                                          emp.status == 'ATIVO') {
+                                        jaPego = true;
+                                      }
+                                    }
+                                    if (jaPego) {
+                                      showErrorAlert(
+                                        context,
+                                        "Você já pegou este livro emprestado.",
+                                      );
+                                    } else {
+                                      try{
+                                        EmprestimoDao().insertEmprestimo(
+                                          livros[index],
+                                          _usuLogado!,
+                                        );
+                                      } catch (e){
+                                        showErrorAlert(context, "Erro no empréstimo.");
+                                      } finally{
+                                        setState(() {});
+                                      }
+                                    }
                                   } finally {
                                     showSuccessDialog(context);
                                     setState(() {});

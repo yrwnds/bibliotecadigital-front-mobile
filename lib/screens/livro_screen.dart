@@ -13,7 +13,6 @@ import '../core/dao/livroDAO.dart';
 import '../core/models/emprestimo.dart';
 
 class LivroScreen extends StatefulWidget {
-
   final String userId;
 
   const LivroScreen({super.key, required this.userId});
@@ -23,7 +22,6 @@ class LivroScreen extends StatefulWidget {
 }
 
 class _LivroScreenState extends State<LivroScreen> {
-
   List<Livro> livros = [];
   List<Categoria> categorias = [];
   List<Emprestimo> emprestimos = [];
@@ -146,11 +144,71 @@ class _LivroScreenState extends State<LivroScreen> {
     getEmprestimos();
   }
 
+  Widget ListaFiltro(BuildContext context) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: categorias.length + 1,
+      itemBuilder: (context, index) {
+        if (index == categorias.length) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 4.0,
+            ),
+            child: TextButton(
+              onPressed: () async {
+                getLivros();
+              },
+              child: Text(
+                "Todos",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          );
+        }
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+          child: TextButton(
+            onPressed: () async {
+              getLivrosCategoria("${categorias[index].id}");
+            },
+            child: Text(categorias[index].nome),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget novoDrawer(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          UserAccountsDrawerHeader(
+            decoration: BoxDecoration(
+              color: const Color(0xFF4E2B80)
+            ),
+            accountEmail: Text(_usuLogado!.email),
+            accountName: Text(_usuLogado!.nome),
+            currentAccountPicture: CircleAvatar(child: Icon(Icons.person)),
+          ),
+          Divider(
+            height: 1,
+            thickness: 1,
+          ),
+          Text("Filtros"),
+          ListaFiltro(context),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: EasySearchBar(
-        title: Text('Bem-vindo, ${_usuLogado?.nome}'),
+        title: Text('Home'),
         onSearch: (value) => getLivroSearch(value),
         backgroundColor: Colors.white,
       ),
@@ -213,14 +271,17 @@ class _LivroScreenState extends State<LivroScreen> {
                                         "Você já pegou este livro emprestado.",
                                       );
                                     } else {
-                                      try{
+                                      try {
                                         EmprestimoDao().insertEmprestimo(
                                           livros[index],
                                           _usuLogado!,
                                         );
-                                      } catch (e){
-                                        showErrorAlert(context, "Erro no empréstimo.");
-                                      } finally{
+                                      } catch (e) {
+                                        showErrorAlert(
+                                          context,
+                                          "Erro no empréstimo.",
+                                        );
+                                      } finally {
                                         setState(() {});
                                       }
                                     }
@@ -240,40 +301,7 @@ class _LivroScreenState extends State<LivroScreen> {
               },
             ),
       drawer: Drawer(
-        child: ListView.builder(
-          itemCount: categorias.length + 1,
-          itemBuilder: (context, index) {
-            if (index == categorias.length) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 4.0,
-                ),
-                child: TextButton(
-                  onPressed: () async {
-                    getLivros();
-                  },
-                  child: Text(
-                    "Todos",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              );
-            }
-            return Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 4.0,
-              ),
-              child: TextButton(
-                onPressed: () async {
-                  getLivrosCategoria("${categorias[index].id}");
-                },
-                child: Text(categorias[index].nome),
-              ),
-            );
-          },
-        ),
+        child: novoDrawer(context),
       ),
     );
   }

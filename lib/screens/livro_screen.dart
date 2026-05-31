@@ -3,6 +3,7 @@ import 'package:bibliotecadigital_mobile/core/dao/userDAO.dart';
 import 'package:bibliotecadigital_mobile/core/models/categoria.dart';
 import 'package:bibliotecadigital_mobile/core/models/livro.dart';
 import 'package:bibliotecadigital_mobile/core/models/user.dart';
+import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easy_search_bar/flutter_easy_search_bar.dart';
@@ -197,7 +198,16 @@ class _LivroScreenState extends State<LivroScreen> {
             height: 1,
             thickness: 1,
           ),
-          Text("Filtros"),
+          Padding(
+            padding: EdgeInsets.all(15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+              Text(
+              'Filtros',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            const Divider()])),
           ListaFiltro(context),
         ],
       ),
@@ -229,7 +239,7 @@ class _LivroScreenState extends State<LivroScreen> {
                         Container(
                           height: 200,
                           width: double.infinity,
-                          color: Colors.purple,
+                          color: const Color(0xFF4E2B80),
                           child: Icon(Icons.book),
                         ),
                         ListTile(

@@ -101,7 +101,7 @@ class _EmprestimoScreenState extends State<EmprestimoScreen> {
                         Container(
                           height: 200,
                           width: double.infinity,
-                          color: Colors.purple,
+                          color: const Color(0xFF4E2B80),
                           child: Icon(Icons.book),
                         ),
                         ListTile(

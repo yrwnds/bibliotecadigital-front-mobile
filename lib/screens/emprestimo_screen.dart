@@ -6,13 +6,57 @@ import '../core/models/emprestimo.dart';
 
 class EmprestimoScreen extends StatefulWidget {
   final String userId;
+
   const EmprestimoScreen({super.key, required this.userId});
 
   @override
   State<EmprestimoScreen> createState() => _EmprestimoScreenState();
 }
 
-// metodo atualizar emprestimo e devolver
+void showSuccessDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.check_circle, color: Colors.green, size: 28),
+            SizedBox(width: 10),
+            Text('Sucesso!'),
+          ],
+        ),
+        content: const Text('Sucesso!'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK', style: TextStyle(color: Colors.green)),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void showErrorAlert(BuildContext context, String errorMessage) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Erro ocorreu.'),
+        content: Text(errorMessage),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Ok'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
 
 class _EmprestimoScreenState extends State<EmprestimoScreen> {
   List<Emprestimo> emprestimos = [];
@@ -21,7 +65,9 @@ class _EmprestimoScreenState extends State<EmprestimoScreen> {
   Future<void> getEmprestimo() async {
     loading = true;
     try {
-      emprestimos = await EmprestimoDao().getEmprestimos();
+      emprestimos = await EmprestimoDao().getEmprestimosAtivosByUser(
+        int.parse(widget.userId),
+      );
     } finally {
       loading = false;
     }
@@ -59,8 +105,8 @@ class _EmprestimoScreenState extends State<EmprestimoScreen> {
                           child: Icon(Icons.book),
                         ),
                         ListTile(
-                          title: Text(emprestimos[index].livro.titulo),
-                          subtitle: Text(emprestimos[index].livro.autor),
+                          title: Text(emprestimos[index].livro!.titulo),
+                          subtitle: Text(emprestimos[index].livro!.autor),
                         ),
                         Container(
                           padding: EdgeInsets.all(16),
@@ -79,16 +125,32 @@ class _EmprestimoScreenState extends State<EmprestimoScreen> {
                           ),
                         ),
                         TextButton(
-                          onPressed: () async{
-                            EmprestimoDao().atualizarEmprestimo(emprestimos[index]);
-                            setState(() {});
-                            },
+                          onPressed: () async {
+                            try {
+                              EmprestimoDao().atualizarEmprestimo(
+                                emprestimos[index],
+                              );
+                            } catch (e) {
+                              showErrorAlert(context, "Ocorreu um erro.");
+                            } finally {
+                              setState(() {
+                                showSuccessDialog(context);
+                              });
+                            }
+                          },
                           child: Text("Renovar empréstimo"),
                         ),
                         TextButton(
-                          onPressed: () async{
-                            EmprestimoDao().devolverLivro(emprestimos[index]);
-                            setState(() {});
+                          onPressed: () async {
+                            try {
+                              EmprestimoDao().devolverLivro(emprestimos[index]);
+                            } catch (e) {
+                              showErrorAlert(context, "Ocorreu um erro.");
+                            } finally {
+                              setState(() {
+                                showSuccessDialog(context);
+                              });
+                            }
                           },
                           child: Text("Devolver"),
                         ),

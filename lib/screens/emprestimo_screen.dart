@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 import '../core/models/emprestimo.dart';
 
 class EmprestimoScreen extends StatefulWidget {
-  final String userId;
 
-  const EmprestimoScreen({super.key, required this.userId});
+  const EmprestimoScreen({super.key});
 
   @override
   State<EmprestimoScreen> createState() => _EmprestimoScreenState();
 }
+
+
 
 void showSuccessDialog(BuildContext context) {
   showDialog(
@@ -66,7 +67,7 @@ class _EmprestimoScreenState extends State<EmprestimoScreen> {
     loading = true;
     try {
       emprestimos = await EmprestimoDao().getEmprestimosAtivosByUser(
-        int.parse(widget.userId),
+        int.parse("1"),
       );
     } finally {
       loading = false;

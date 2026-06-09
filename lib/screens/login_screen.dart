@@ -1,7 +1,8 @@
 import 'package:bibliotecadigital_mobile/screens/home-screen.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 
-import '../core/auth_service.dart';
+import '../service/auth_service.dart';
 import '../core/models/user.dart';
 import 'cadastro_screen.dart';
 
@@ -10,8 +11,11 @@ class LoginScreen extends StatelessWidget {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  final AuthService _authService = AuthService();
+
 
   Widget VelhoLogin(BuildContext context){
     return Scaffold(
@@ -78,7 +82,7 @@ class LoginScreen extends StatelessWidget {
                   children: [Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15),
                     child: TextFormField(
-                      controller: emailController,
+                      controller: _emailController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: "Email",
@@ -94,7 +98,7 @@ class LoginScreen extends StatelessWidget {
                         bottom: 10,
                       ),
                       child: TextFormField(
-                        controller: passwordController,
+                        controller: _passwordController,
                         obscureText: true,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
@@ -117,28 +121,7 @@ class LoginScreen extends StatelessWidget {
                                 border: Border.all(width: 1),
                               ),
                               child: TextButton(
-                                onPressed: () async{
-                                  bool valido =
-                                  _formKey.currentState!.validate();
-                                  if (valido){
-                                    final User? user = await AuthService().login(
-                                        emailController.text, passwordController.text
-                                    );
-                                    if(user != null){
-                                      print("Entrou em navigator");
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => HomeScreen(userId: user.id!),
-                                        ),
-                                      );
-                                    } else{
-                                      print("Erro user = null");
-                                    }
-                                  } else{
-                                    print("Erro em valido");
-                                  }
-                                },
+                                onPressed: (){},
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
@@ -189,7 +172,7 @@ class LoginScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         TextFormField(
-                          controller: emailController,
+                          controller: _emailController,
                           decoration: const InputDecoration(
                             hintText: 'E-mail',
                             filled: true,
@@ -207,7 +190,7 @@ class LoginScreen extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
                           child: TextFormField(
-                            controller: passwordController,
+                            controller: _passwordController,
                             obscureText: true,
                             decoration: const InputDecoration(
                               hintText: 'Senha',
@@ -224,23 +207,7 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ),
                         ElevatedButton(
-                          onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-                              _formKey.currentState!.save();
-                              final User? user = await AuthService().login(
-                                  emailController.text, passwordController.text
-                              );
-                              if (user != null) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        HomeScreen(userId: user.id!),
-                                  ),
-                                );
-                              }
-                            }
-                          },
+                          onPressed: _login,
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
                             backgroundColor: const Color(0xFF4E2B80),
@@ -306,6 +273,21 @@ class LoginScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _login() async {
+    if (_formKey.currentState!.validate()) {
+      final user = await _authService.login(
+        _emailController.text,
+        _passwordController.text,
+      );
+      if (user != null) {
+        Navigator.push(
+          context as BuildContext,
+          MaterialPageRoute(builder: (_) => HomeScreen()),
+        );
+      }
+    }
   }
 
   @override

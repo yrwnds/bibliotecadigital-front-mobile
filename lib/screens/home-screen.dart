@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
 
-  final int userId;
-  const HomeScreen({super.key, required this.userId});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -29,8 +28,8 @@ class _HomeScreenState extends State<HomeScreen>{
   Future<void> getTelas() async{
     loading = true;
     try{
-      _telas = [LivroScreen(userId: widget.userId.toString()),
-        EmprestimoScreen(userId: widget.userId.toString())];
+      _telas = [LivroScreen(),
+        EmprestimoScreen()];
     } finally{
         loading = false;
     }

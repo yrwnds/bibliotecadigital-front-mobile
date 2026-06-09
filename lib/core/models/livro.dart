@@ -6,6 +6,9 @@ class Livro {
   final String autor;
   final String anopublicado;
 
+  final String? imagemPath;
+  final String? pdfPath;
+
   int n_exemplares;
   int n_disponivel;
 
@@ -19,6 +22,8 @@ class Livro {
     required this.n_exemplares,
     required this.n_disponivel,
     this.categoria,
+    required this.imagemPath,
+    required this.pdfPath
   });
 
   Map<String, dynamic> toMap() {
@@ -30,6 +35,8 @@ class Livro {
       'n_exemplares': n_exemplares,
       'n_disponivel': n_disponivel,
       'categoria': categoria,
+      'imagemPath' : imagemPath,
+      'pdfPath' : pdfPath
     };
   }
 
@@ -42,6 +49,8 @@ class Livro {
       n_exemplares: map['n_exemplares'] ?? 0,
       n_disponivel: map['n_disponivel'] ?? 0,
       categoria: map['categoria'],
+      imagemPath: map['imagemPath'],
+      pdfPath: map['pdfPath']
     );
   }
 }

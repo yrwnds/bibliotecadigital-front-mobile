@@ -1,8 +1,13 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:bibliotecadigital_mobile/screens/emprestimo_screen.dart';
 import 'package:bibliotecadigital_mobile/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
-import '../core/auth_service.dart';
+import '../service/auth_service.dart';
 import '../core/models/user.dart';
+import '../service/image_picker_widget.dart';
 
 class CadastroScreen extends StatefulWidget{
   const CadastroScreen({super.key});
@@ -14,13 +19,17 @@ class CadastroScreen extends StatefulWidget{
 class _CadastroScreenState extends State<CadastroScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final emailController = TextEditingController();
+  final _emailController = TextEditingController();
 
-  final passwordController = TextEditingController();
+  final _passwordController = TextEditingController();
 
-  final nomeController = TextEditingController();
+  final _nomeController = TextEditingController();
 
-  final matriculaController = TextEditingController();
+  final _matriculaController = TextEditingController();
+
+  File? _imageFile;
+
+  final AuthService _authService = AuthService();
 
 
   void showErrorAlert(BuildContext context, String errorMessage) {
@@ -71,8 +80,17 @@ class _CadastroScreenState extends State<CadastroScreen> {
                     key: _formKey,
                     child: Column(
                       children: [
+                        ImagePickerWidget(onImageSelected: (File? image) {
+                          _imageFile = image;
+                        },),
                         TextFormField(
-                          controller: nomeController,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Nome é obrigatório.';
+                            }
+                            return null;
+                          },
+                          controller: _nomeController,
                           decoration: const InputDecoration(
                             hintText: 'Nome',
                             filled: true,
@@ -90,7 +108,13 @@ class _CadastroScreenState extends State<CadastroScreen> {
                         Padding(
                             padding: const EdgeInsets.symmetric(vertical: 16.0),
                           child: TextFormField(
-                            controller: matriculaController,
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return 'Matrícula é obrigatória.';
+                              }
+                              return null;
+                            },
+                            controller: _matriculaController,
                             decoration: const InputDecoration(
                               hintText: 'Matrícula',
                               filled: true,
@@ -107,7 +131,13 @@ class _CadastroScreenState extends State<CadastroScreen> {
                           ),
                         ),
                         TextFormField(
-                          controller: emailController,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'E-mail é obrigatório.';
+                            }
+                            return null;
+                          },
+                          controller: _emailController,
                           decoration: const InputDecoration(
                             hintText: 'E-mail',
                             filled: true,
@@ -125,7 +155,13 @@ class _CadastroScreenState extends State<CadastroScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
                           child: TextFormField(
-                            controller: passwordController,
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return 'Senha é obrigatória.';
+                              }
+                              return null;
+                            },
+                            controller: _passwordController,
                             obscureText: true,
                             decoration: const InputDecoration(
                               hintText: 'Senha',
@@ -142,23 +178,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                           ),
                         ),
                         ElevatedButton(
-                          onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-                              _formKey.currentState!.save();
-                              final newuser = User(matricula: matriculaController.text, senha: passwordController.text, nome: nomeController.text, email: emailController.text);
-                              final user = await AuthService().register(newuser);
-                              if(user){
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (_) => LoginScreen()),
-                                );
-                              } else{
-                                showErrorAlert(context, "Não foi possível criar o usuário. Tente novamente.");
-                              }
-                            } else{
-                              showErrorAlert(context, "Cheque a validade dos dados e tente novamente.");
-                            }
-                          },
+                          onPressed: _register,
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
                             backgroundColor: const Color(0xFF4E2B80),
@@ -166,7 +186,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                             minimumSize: const Size(double.infinity, 48),
                             shape: const StadiumBorder(),
                           ),
-                          child: const Text("Login"),
+                          child: const Text("Cadastrar"),
                         ),
                         const SizedBox(height: 16.0),
                         TextButton(
@@ -179,7 +199,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                           },
                           child: Text.rich(
                             const TextSpan(
-                              text: "Já possui uma conta?",
+                              text: "Já possui uma conta? ",
                               children: [
                                 TextSpan(
                                   text: "Faça login agora!",
@@ -212,167 +232,189 @@ class _CadastroScreenState extends State<CadastroScreen> {
       ),
     );
   }
+  //
+  // Widget velhoCadastro(BuildContext context){
+  //   return Scaffold(
+  //     backgroundColor: Colors.white,
+  //     appBar: AppBar(backgroundColor: Colors.white70),
+  //     body: SingleChildScrollView(
+  //       child: Column(
+  //         children: <Widget>[
+  //           Container(
+  //             padding: const EdgeInsets.only(top: 60.0, bottom: 10),
+  //             child: Padding(
+  //                 padding: EdgeInsets.only(left: 15, top: 100),
+  //                 child: Row(
+  //                   mainAxisAlignment: MainAxisAlignment.start,
+  //                   children: [
+  //                     SizedBox(
+  //                       height: 70,
+  //                       child: Row(
+  //                         children: <Widget>[
+  //                           Text(
+  //                             "UFSMLib",
+  //                             style: TextStyle(
+  //                               fontSize: 60,
+  //                               fontWeight: FontWeight.bold,
+  //                             ),
+  //                           ),
+  //                           Icon(Icons.menu_book, size: 60),
+  //                         ],
+  //                       ),
+  //                     )
+  //                   ],
+  //                 )
+  //
+  //             ),
+  //           ),
+  //           Container(
+  //               padding: const EdgeInsets.only(left: 15, top: 50, bottom: 50),
+  //               child: Row(
+  //                   mainAxisAlignment: MainAxisAlignment.start,
+  //                   children: [
+  //                     Text(
+  //                         "Cadastre sua conta e acesse nosso catálogo!"
+  //                     )
+  //                   ]
+  //               )
+  //           ),
+  //           Form(
+  //               key: _formKey,
+  //               child: Column(
+  //                   children: [Padding(
+  //                     padding: const EdgeInsets.only(
+  //                       left: 15.0,
+  //                       right: 15.0,
+  //                       top: 15,
+  //                       bottom: 0,
+  //                     ),
+  //                     child: TextFormField(
+  //                       controller: _nomeController,
+  //                       decoration: const InputDecoration(
+  //                           border: OutlineInputBorder(),
+  //                           labelText: "Nome",
+  //                           hintText: "Exemplo: Ana Silva"
+  //                       ),
+  //                     ),
+  //                   ),
+  //                     Padding(
+  //                       padding: const EdgeInsets.only(
+  //                         left: 15.0,
+  //                         right: 15.0,
+  //                         top: 15,
+  //                         bottom: 10,
+  //                       ),
+  //                       child: TextFormField(
+  //                         controller: _matriculaController,
+  //                         decoration: const InputDecoration(
+  //                             border: OutlineInputBorder(),
+  //                             labelText: "Matrícula",
+  //                             hintText: "Exemplo: 12345678"
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     Padding(
+  //                       padding: EdgeInsets.symmetric(horizontal: 15),
+  //                       child: TextFormField(
+  //                         controller: _emailController,
+  //                         decoration: const InputDecoration(
+  //                           border: OutlineInputBorder(),
+  //                           labelText: "Email",
+  //                           hintText: "Exemplo: 123@gmail.com",
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     Padding(
+  //                       padding: const EdgeInsets.only(
+  //                         left: 15.0,
+  //                         right: 15.0,
+  //                         top: 15,
+  //                         bottom: 10,
+  //                       ),
+  //                       child: TextFormField(
+  //                         controller: _passwordController,
+  //                         obscureText: true,
+  //                         decoration: const InputDecoration(
+  //                           border: OutlineInputBorder(),
+  //                           labelText: "Senha",
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     SizedBox(
+  //                         height: 20
+  //                     ),
+  //                     Padding(
+  //                         padding: EdgeInsets.only(right: 15),
+  //                         child: Row(
+  //                             mainAxisAlignment: MainAxisAlignment.end,
+  //                             children: [Container(
+  //                               height: 40,
+  //                               width: 150,
+  //                               decoration: BoxDecoration(
+  //                                 color: Colors.white,
+  //                                 border: Border.all(width: 1),
+  //                               ),
+  //                               child: TextButton(
+  //                                 onPressed: _register,
+  //                                 child: Row(
+  //                                   mainAxisAlignment: MainAxisAlignment.center,
+  //                                   children: <Widget>[
+  //                                     Icon(Icons.login, size: 20, color: Colors.black),
+  //                                     const Text(
+  //                                       "Criar conta",
+  //                                       style: TextStyle(color: Colors.black, fontSize: 20),
+  //                                     )
+  //                                   ],
+  //                                 ),
+  //                               ),
+  //                             ),]
+  //                         )
+  //                     )]
+  //               )
+  //           )
+  //
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget velhoCadastro(BuildContext context){
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(backgroundColor: Colors.white70),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-              padding: const EdgeInsets.only(top: 60.0, bottom: 10),
-              child: Padding(
-                  padding: EdgeInsets.only(left: 15, top: 100),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 70,
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              "UFSMLib",
-                              style: TextStyle(
-                                fontSize: 60,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Icon(Icons.menu_book, size: 60),
-                          ],
-                        ),
-                      )
-                    ],
-                  )
+  void _register() async {
+    print("entrou em _register");
+    if (_formKey.currentState!.validate()) {
+      print("formkey validou");
+      final user = User(
+        nome: _nomeController.text,
+        matricula: _matriculaController.text,
+        senha: _passwordController.text,
+        email: _emailController.text,
+        imagemPath: _imageFile?.path
+      );
+      try{
+        final success = await _authService.register(user).timeout(const Duration(seconds: 10));
+        if (success) {
+          showSuccessDialog(context);
+          print("success");
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => LoginScreen()),
+          );
+        } else{
+          print("error alert");
+          showErrorAlert(context, "Ocorreu um erro ao realizar o cadastro.");
+        }
+      } on TimeoutException catch (e){
+        showErrorAlert(context, "Falha ao conectar à API. (TimeoutException)");
+        print(e);
+      } on SocketException catch (e){
+        print(e);
+        showErrorAlert(context, "Falha ao conectar à API. (SocketException)");
+      }
 
-              ),
-            ),
-            Container(
-                padding: const EdgeInsets.only(left: 15, top: 50, bottom: 50),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                          "Cadastre sua conta e acesse nosso catálogo!"
-                      )
-                    ]
-                )
-            ),
-            Form(
-                key: _formKey,
-                child: Column(
-                    children: [Padding(
-                      padding: const EdgeInsets.only(
-                        left: 15.0,
-                        right: 15.0,
-                        top: 15,
-                        bottom: 0,
-                      ),
-                      child: TextFormField(
-                        controller: nomeController,
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: "Nome",
-                            hintText: "Exemplo: Ana Silva"
-                        ),
-                      ),
-                    ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: 15.0,
-                          right: 15.0,
-                          top: 15,
-                          bottom: 10,
-                        ),
-                        child: TextFormField(
-                          controller: matriculaController,
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: "Matrícula",
-                              hintText: "Exemplo: 12345678"
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15),
-                        child: TextFormField(
-                          controller: emailController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: "Email",
-                            hintText: "Exemplo: 123@gmail.com",
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: 15.0,
-                          right: 15.0,
-                          top: 15,
-                          bottom: 10,
-                        ),
-                        child: TextFormField(
-                          controller: passwordController,
-                          obscureText: true,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: "Senha",
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                          height: 20
-                      ),
-                      Padding(
-                          padding: EdgeInsets.only(right: 15),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [Container(
-                                height: 40,
-                                width: 150,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(width: 1),
-                                ),
-                                child: TextButton(
-                                  onPressed: () async {
-                                    bool valido =
-                                    _formKey.currentState!.validate();
-                                    if(valido){
-                                      final newuser = User(matricula: matriculaController.text, senha: passwordController.text, nome: nomeController.text, email: emailController.text);
-                                      final user = await AuthService().register(newuser);
-                                      if(user){
-                                        print("Salvou");
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (_) => LoginScreen()),
-                                        );
-                                      } else{
-                                        print("Erro");
-                                      }
-                                    }
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Icon(Icons.login, size: 20, color: Colors.black),
-                                      const Text(
-                                        "Criar conta",
-                                        style: TextStyle(color: Colors.black, fontSize: 20),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),]
-                          )
-                      )]
-                )
-            )
-
-          ],
-        ),
-      ),
-    );
+    } else{
+      print("error alert");
+      showErrorAlert(context, "Cheque a validade dos dados e tente novamente.");
+    }
   }
 
   @override

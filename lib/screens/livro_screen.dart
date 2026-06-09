@@ -1,4 +1,6 @@
-import 'package:bibliotecadigital_mobile/core/auth_service.dart';
+import 'dart:io';
+
+import 'package:bibliotecadigital_mobile/service/auth_service.dart';
 import 'package:bibliotecadigital_mobile/core/dao/userDAO.dart';
 import 'package:bibliotecadigital_mobile/core/models/categoria.dart';
 import 'package:bibliotecadigital_mobile/core/models/livro.dart';
@@ -14,9 +16,7 @@ import '../core/dao/livroDAO.dart';
 import '../core/models/emprestimo.dart';
 
 class LivroScreen extends StatefulWidget {
-  final String userId;
-
-  const LivroScreen({super.key, required this.userId});
+  const LivroScreen({super.key});
 
   @override
   State<LivroScreen> createState() => _LivroScreenState();
@@ -129,7 +129,7 @@ class _LivroScreenState extends State<LivroScreen> {
   Future<void> getUsuLogado() async {
     loading = true;
     try {
-      _usuLogado = await userDao().getUserId(int.parse(widget.userId));
+      _usuLogado = await userDao().getUserId(int.parse("1"));
       setState(() {});
     } finally {
       loading = false;
@@ -187,27 +187,31 @@ class _LivroScreenState extends State<LivroScreen> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           UserAccountsDrawerHeader(
-            decoration: BoxDecoration(
-              color: const Color(0xFF4E2B80)
-            ),
+            decoration: BoxDecoration(color: const Color(0xFF4E2B80)),
             accountEmail: Text(_usuLogado!.email),
             accountName: Text(_usuLogado!.nome),
-            currentAccountPicture: CircleAvatar(child: Icon(Icons.person)),
+            currentAccountPicture: _usuLogado?.imagemPath != null
+                ? CircleAvatar(
+                    child: Image.file(
+                      File(_usuLogado!.imagemPath!),
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                : CircleAvatar(child: Icon(Icons.person)),
           ),
-          Divider(
-            height: 1,
-            thickness: 1,
-          ),
+          Divider(height: 1, thickness: 1),
           Padding(
             padding: EdgeInsets.all(15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-              Text(
-              'Filtros',
-              style: Theme.of(context).textTheme.bodyLarge,
+                Text('Filtros', style: Theme.of(context).textTheme.bodyLarge),
+                const Divider(),
+              ],
             ),
-            const Divider()])),
+          ),
           ListaFiltro(context),
         ],
       ),
@@ -240,7 +244,12 @@ class _LivroScreenState extends State<LivroScreen> {
                           height: 200,
                           width: double.infinity,
                           color: const Color(0xFF4E2B80),
-                          child: Icon(Icons.book),
+                          child: livros[index].imagemPath != null
+                              ? Image.file(
+                                  File(livros[index].imagemPath!),
+                                  fit: BoxFit.cover,
+                                )
+                              : Icon(Icons.book),
                         ),
                         ListTile(
                           title: Text(livros[index].titulo),
@@ -310,9 +319,7 @@ class _LivroScreenState extends State<LivroScreen> {
                 );
               },
             ),
-      drawer: Drawer(
-        child: novoDrawer(context),
-      ),
+      drawer: Drawer(child: novoDrawer(context)),
     );
   }
 }

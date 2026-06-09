@@ -9,7 +9,7 @@ import '../service/auth_service.dart';
 import '../core/models/user.dart';
 import '../service/image_picker_widget.dart';
 
-class CadastroScreen extends StatefulWidget{
+class CadastroScreen extends StatefulWidget {
   const CadastroScreen({super.key});
 
   @override
@@ -30,7 +30,6 @@ class _CadastroScreenState extends State<CadastroScreen> {
   File? _imageFile;
 
   final AuthService _authService = AuthService();
-
 
   void showErrorAlert(BuildContext context, String errorMessage) {
     showDialog(
@@ -65,24 +64,26 @@ class _CadastroScreenState extends State<CadastroScreen> {
                   SizedBox(height: constraints.maxHeight * 0.1),
                   Icon(Icons.library_books, size: 50),
                   Text(
-                    "UFSMLib", style: TextStyle(fontWeight: FontWeight.bold),),
+                    "UFSMLib",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   SizedBox(height: constraints.maxHeight * 0.1),
                   Text(
                     "Cadastre-se",
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .headlineSmall!
-                        .copyWith(fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: constraints.maxHeight * 0.05),
                   Form(
                     key: _formKey,
                     child: Column(
                       children: [
-                        ImagePickerWidget(onImageSelected: (File? image) {
-                          _imageFile = image;
-                        },),
+                        ImagePickerWidget(
+                          onImageSelected: (File? image) {
+                            _imageFile = image;
+                          },
+                        ),
                         TextFormField(
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
@@ -96,17 +97,20 @@ class _CadastroScreenState extends State<CadastroScreen> {
                             filled: true,
                             fillColor: Color(0xFFF5FCF9),
                             contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16.0 * 1.5, vertical: 16.0),
+                              horizontal: 16.0 * 1.5,
+                              vertical: 16.0,
+                            ),
                             border: const OutlineInputBorder(
                               borderSide: BorderSide.none,
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(50)),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(50),
+                              ),
                             ),
                           ),
                           keyboardType: TextInputType.text,
                         ),
                         Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
                           child: TextFormField(
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
@@ -120,11 +124,14 @@ class _CadastroScreenState extends State<CadastroScreen> {
                               filled: true,
                               fillColor: Color(0xFFF5FCF9),
                               contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0 * 1.5, vertical: 16.0),
+                                horizontal: 16.0 * 1.5,
+                                vertical: 16.0,
+                              ),
                               border: const OutlineInputBorder(
                                 borderSide: BorderSide.none,
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(50)),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(50),
+                                ),
                               ),
                             ),
                             keyboardType: TextInputType.text,
@@ -143,11 +150,14 @@ class _CadastroScreenState extends State<CadastroScreen> {
                             filled: true,
                             fillColor: Color(0xFFF5FCF9),
                             contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16.0 * 1.5, vertical: 16.0),
+                              horizontal: 16.0 * 1.5,
+                              vertical: 16.0,
+                            ),
                             border: const OutlineInputBorder(
                               borderSide: BorderSide.none,
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(50)),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(50),
+                              ),
                             ),
                           ),
                           keyboardType: TextInputType.text,
@@ -168,11 +178,14 @@ class _CadastroScreenState extends State<CadastroScreen> {
                               filled: true,
                               fillColor: Color(0xFFF5FCF9),
                               contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0 * 1.5, vertical: 16.0),
+                                horizontal: 16.0 * 1.5,
+                                vertical: 16.0,
+                              ),
                               border: OutlineInputBorder(
                                 borderSide: BorderSide.none,
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(50)),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(50),
+                                ),
                               ),
                             ),
                           ),
@@ -193,8 +206,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (_) => LoginScreen()),
+                              MaterialPageRoute(builder: (_) => LoginScreen()),
                             );
                           },
                           child: Text.rich(
@@ -207,18 +219,14 @@ class _CadastroScreenState extends State<CadastroScreen> {
                                 ),
                               ],
                             ),
-                            style: Theme
-                                .of(context)
-                                .textTheme
-                                .bodyMedium!
+                            style: Theme.of(context).textTheme.bodyMedium!
                                 .copyWith(
-                              color: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .color!
-                                  .withOpacity(0.64),
-                            ),
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .color!
+                                      .withOpacity(0.64),
+                                ),
                           ),
                         ),
                       ],
@@ -232,6 +240,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
       ),
     );
   }
+
   //
   // Widget velhoCadastro(BuildContext context){
   //   return Scaffold(
@@ -388,10 +397,13 @@ class _CadastroScreenState extends State<CadastroScreen> {
         matricula: _matriculaController.text,
         senha: _passwordController.text,
         email: _emailController.text,
-        imagemPath: _imageFile?.path
+        imagem_path: _imageFile?.path,
+        qt_livros_emprestados: 0,
       );
-      try{
-        final success = await _authService.register(user).timeout(const Duration(seconds: 10));
+      try {
+        final success = await _authService
+            .register(user)
+            .timeout(const Duration(seconds: 10));
         if (success) {
           showSuccessDialog(context);
           print("success");
@@ -399,19 +411,18 @@ class _CadastroScreenState extends State<CadastroScreen> {
             context,
             MaterialPageRoute(builder: (_) => LoginScreen()),
           );
-        } else{
+        } else {
           print("error alert");
           showErrorAlert(context, "Ocorreu um erro ao realizar o cadastro.");
         }
-      } on TimeoutException catch (e){
+      } on TimeoutException catch (e) {
         showErrorAlert(context, "Falha ao conectar à API. (TimeoutException)");
         print(e);
-      } on SocketException catch (e){
+      } on SocketException catch (e) {
         print(e);
         showErrorAlert(context, "Falha ao conectar à API. (SocketException)");
       }
-
-    } else{
+    } else {
       print("error alert");
       showErrorAlert(context, "Cheque a validade dos dados e tente novamente.");
     }

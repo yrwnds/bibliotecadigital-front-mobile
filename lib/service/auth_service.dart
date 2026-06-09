@@ -6,7 +6,7 @@ import 'dart:convert';
 
 class AuthService{
   final userDao _userDAO = userDao();
-  final String _baseUrl = "http://10.0.2.2:8080/api/auth";
+  final String _baseUrl = "https://192.168.100.35:8080/poow2";
   final _storage = const FlutterSecureStorage();
 
   User? usuLogado;
@@ -14,7 +14,7 @@ class AuthService{
   Future<bool> register(User usuario) async{
     print("Entrou em register");
     final response = await http.post(
-      Uri.parse('$_baseUrl/signup'),
+      Uri.parse('$_baseUrl/usuarios'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(usuario.toMap())
     );
@@ -24,7 +24,7 @@ class AuthService{
 
   Future<bool?> login(String email, String senha) async{
     final response = await http.post(
-      Uri.parse('$_baseUrl/signin'),
+      Uri.parse('$_baseUrl/login'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email, 'senha': senha})
     );

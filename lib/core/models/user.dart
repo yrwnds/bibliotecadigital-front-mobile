@@ -4,7 +4,8 @@ class User{
   final String matricula;
   final String email;
   final String senha;
-  final String? imagemPath;
+  final String? imagem_path;
+  final int qt_livros_emprestados;
 
   User({
     this.id,
@@ -12,7 +13,8 @@ class User{
     required this.matricula,
     required this.email,
     required this.senha,
-    required this.imagemPath
+    required this.imagem_path,
+    required this.qt_livros_emprestados
     });
 
   Map<String, dynamic> toMap(){
@@ -22,7 +24,8 @@ class User{
       'matricula': matricula,
       'email': email,
       'senha': senha,
-      'imagemPath': imagemPath
+      'imagem_path': imagem_path,
+      'qt_livros_emprestados': qt_livros_emprestados
     };
   }
 
@@ -33,7 +36,8 @@ class User{
       matricula: map['matricula'],
       email: map['email'],
       senha: map['senha'],
-      imagemPath: map['imagemPath']
+      imagem_path: map['imagem_path'],
+      qt_livros_emprestados: map['qt_livros_emprestados']
     );
   }
 

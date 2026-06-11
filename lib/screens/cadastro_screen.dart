@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:bibliotecadigital_mobile/screens/emprestimo_screen.dart';
 import 'package:bibliotecadigital_mobile/screens/login_screen.dart';
 import 'package:flutter/material.dart';
-
+import 'package:email_validator/email_validator.dart';
 import '../service/auth_service.dart';
 import '../core/models/user.dart';
 import '../service/image_picker_widget.dart';
@@ -70,7 +70,11 @@ class _CadastroScreenState extends State<CadastroScreen> {
                   SizedBox(height: constraints.maxHeight * 0.1),
                   Text(
                     "Cadastre-se",
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .headlineSmall!
+                        .copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -86,7 +90,9 @@ class _CadastroScreenState extends State<CadastroScreen> {
                         ),
                         TextFormField(
                           validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
+                            if (value == null || value
+                                .trim()
+                                .isEmpty) {
                               return 'Nome é obrigatório.';
                             }
                             return null;
@@ -113,8 +119,14 @@ class _CadastroScreenState extends State<CadastroScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
                           child: TextFormField(
                             validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
+                              if (value == null || value
+                                  .trim()
+                                  .isEmpty) {
                                 return 'Matrícula é obrigatória.';
+                              } else if (value.length < 8) {
+                                return 'Matrícula deve possuir 8 caracteres.';
+                              } else if (num.tryParse(value) == null) {
+                                return 'Matrícula deve conter apenas números.';
                               }
                               return null;
                             },
@@ -139,8 +151,12 @@ class _CadastroScreenState extends State<CadastroScreen> {
                         ),
                         TextFormField(
                           validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
+                            if (value == null || value
+                                .trim()
+                                .isEmpty) {
                               return 'E-mail é obrigatório.';
+                            } else if (!EmailValidator.validate(value)) {
+                              return 'E-mail deve ser um e-mail válido.';
                             }
                             return null;
                           },
@@ -166,8 +182,12 @@ class _CadastroScreenState extends State<CadastroScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
                           child: TextFormField(
                             validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
+                              if (value == null || value
+                                  .trim()
+                                  .isEmpty) {
                                 return 'Senha é obrigatória.';
+                              } else if (value.length < 8){
+                                return 'Senha deve possuir 8 caracteres.';
                               }
                               return null;
                             },
@@ -219,14 +239,18 @@ class _CadastroScreenState extends State<CadastroScreen> {
                                 ),
                               ],
                             ),
-                            style: Theme.of(context).textTheme.bodyMedium!
+                            style: Theme
+                                .of(context)
+                                .textTheme
+                                .bodyMedium!
                                 .copyWith(
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge!
-                                      .color!
-                                      .withOpacity(0.64),
-                                ),
+                              color: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .color!
+                                  .withOpacity(0.64),
+                            ),
                           ),
                         ),
                       ],
@@ -393,17 +417,17 @@ class _CadastroScreenState extends State<CadastroScreen> {
     if (_formKey.currentState!.validate()) {
       print("formkey validou");
       final user = User(
-        nome: _nomeController.text,
-        matricula: _matriculaController.text,
-        senha: _passwordController.text,
-        email: _emailController.text,
-        imagem_path: _imageFile?.path,
-        qt_livros_emprestados: 0,
+          nome: _nomeController.text,
+          matricula: _matriculaController.text,
+          senha: _passwordController.text,
+          email: _emailController.text,
+          imagem_path: _imageFile?.path,
+          qt_livros_emprestados: 0,
+          identificador: 'USER'
       );
       try {
         final success = await _authService
-            .register(user)
-            .timeout(const Duration(seconds: 10));
+            .register(user);
         if (success) {
           showSuccessDialog(context);
           print("success");

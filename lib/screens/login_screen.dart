@@ -1,7 +1,7 @@
+import 'package:bibliotecadigital_mobile/screens/emprestimo_screen.dart';
 import 'package:bibliotecadigital_mobile/screens/home-screen.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
-
 import '../service/auth_service.dart';
 import '../core/models/user.dart';
 import 'cadastro_screen.dart';
@@ -11,139 +11,139 @@ class LoginScreen extends StatelessWidget {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final _emailController = TextEditingController();
+  final _matriculaController = TextEditingController();
   final _passwordController = TextEditingController();
 
   final AuthService _authService = AuthService();
 
-
-  Widget VelhoLogin(BuildContext context){
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(backgroundColor: Colors.white70),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-              padding: const EdgeInsets.only(top: 60.0, bottom: 10),
-              child: Padding(
-                  padding: EdgeInsets.only(left: 15, top: 100),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 70,
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              "UFSMLib",
-                              style: TextStyle(
-                                fontSize: 60,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Icon(Icons.menu_book, size: 60),
-                          ],
-                        ),
-                      )
-                    ],
-                  )
-
-              ),
-            ),
-            Center(
-              child: SizedBox(
-                height: 100,
-                child: Row(
-                  children: <Widget>[
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => CadastroScreen()),
-                        );
-                      },
-                      child: const Text(
-                        "Crie uma conta",
-                        style: TextStyle(color: Colors.purple, fontSize: 15),
-                      ),
-                    ),
-                    Text(
-                      "e acesse nosso catálogo!",
-                      style: TextStyle(fontSize: 15),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Form(
-                key: _formKey,
-                child: Column(
-                  children: [Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: TextFormField(
-                      controller: _emailController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: "Email",
-                        hintText: "Exemplo: 123@gmail.com",
-                      ),
-                    ),
-                  ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 15.0,
-                        right: 15.0,
-                        top: 15,
-                        bottom: 10,
-                      ),
-                      child: TextFormField(
-                        controller: _passwordController,
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: "Senha",
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                        height: 20
-                    ),
-                    Padding(
-                        padding: EdgeInsets.only(right: 15),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [Container(
-                              height: 40,
-                              width: 150,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(width: 1),
-                              ),
-                              child: TextButton(
-                                onPressed: (){},
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Icon(Icons.login, size: 20, color: Colors.black),
-                                    const Text(
-                                      "Login",
-                                      style: TextStyle(color: Colors.black, fontSize: 18),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),]
-                        )
-                    )],
-                )
-            )
-
-          ],
-        ),
-      ),
-    );
-  }
+  //
+  // Widget VelhoLogin(BuildContext context){
+  //   return Scaffold(
+  //     backgroundColor: Colors.white,
+  //     appBar: AppBar(backgroundColor: Colors.white70),
+  //     body: SingleChildScrollView(
+  //       child: Column(
+  //         children: <Widget>[
+  //           Container(
+  //             padding: const EdgeInsets.only(top: 60.0, bottom: 10),
+  //             child: Padding(
+  //                 padding: EdgeInsets.only(left: 15, top: 100),
+  //                 child: Row(
+  //                   mainAxisAlignment: MainAxisAlignment.start,
+  //                   children: [
+  //                     SizedBox(
+  //                       height: 70,
+  //                       child: Row(
+  //                         children: <Widget>[
+  //                           Text(
+  //                             "UFSMLib",
+  //                             style: TextStyle(
+  //                               fontSize: 60,
+  //                               fontWeight: FontWeight.bold,
+  //                             ),
+  //                           ),
+  //                           Icon(Icons.menu_book, size: 60),
+  //                         ],
+  //                       ),
+  //                     )
+  //                   ],
+  //                 )
+  //
+  //             ),
+  //           ),
+  //           Center(
+  //             child: SizedBox(
+  //               height: 100,
+  //               child: Row(
+  //                 children: <Widget>[
+  //                   TextButton(
+  //                     onPressed: () {
+  //                       Navigator.push(
+  //                         context,
+  //                         MaterialPageRoute(builder: (_) => CadastroScreen()),
+  //                       );
+  //                     },
+  //                     child: const Text(
+  //                       "Crie uma conta",
+  //                       style: TextStyle(color: Colors.purple, fontSize: 15),
+  //                     ),
+  //                   ),
+  //                   Text(
+  //                     "e acesse nosso catálogo!",
+  //                     style: TextStyle(fontSize: 15),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //           Form(
+  //               key: _formKey,
+  //               child: Column(
+  //                 children: [Padding(
+  //                   padding: EdgeInsets.symmetric(horizontal: 15),
+  //                   child: TextFormField(
+  //                     controller: _emailController,
+  //                     decoration: const InputDecoration(
+  //                       border: OutlineInputBorder(),
+  //                       labelText: "Email",
+  //                       hintText: "Exemplo: 123@gmail.com",
+  //                     ),
+  //                   ),
+  //                 ),
+  //                   Padding(
+  //                     padding: const EdgeInsets.only(
+  //                       left: 15.0,
+  //                       right: 15.0,
+  //                       top: 15,
+  //                       bottom: 10,
+  //                     ),
+  //                     child: TextFormField(
+  //                       controller: _passwordController,
+  //                       obscureText: true,
+  //                       decoration: const InputDecoration(
+  //                         border: OutlineInputBorder(),
+  //                         labelText: "Senha",
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   SizedBox(
+  //                       height: 20
+  //                   ),
+  //                   Padding(
+  //                       padding: EdgeInsets.only(right: 15),
+  //                       child: Row(
+  //                           mainAxisAlignment: MainAxisAlignment.end,
+  //                           children: [Container(
+  //                             height: 40,
+  //                             width: 150,
+  //                             decoration: BoxDecoration(
+  //                               color: Colors.white,
+  //                               border: Border.all(width: 1),
+  //                             ),
+  //                             child: TextButton(
+  //                               onPressed: (){},
+  //                               child: Row(
+  //                                 mainAxisAlignment: MainAxisAlignment.center,
+  //                                 children: <Widget>[
+  //                                   Icon(Icons.login, size: 20, color: Colors.black),
+  //                                   const Text(
+  //                                     "Login",
+  //                                     style: TextStyle(color: Colors.black, fontSize: 18),
+  //                                   )
+  //                                 ],
+  //                               ),
+  //                             ),
+  //                           ),]
+  //                       )
+  //                   )],
+  //               )
+  //           )
+  //
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget NovoLogin(BuildContext context){
     return Scaffold(
@@ -172,9 +172,9 @@ class LoginScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         TextFormField(
-                          controller: _emailController,
+                          controller: _matriculaController,
                           decoration: const InputDecoration(
-                            hintText: 'E-mail',
+                            hintText: 'Matrícula',
                             filled: true,
                             fillColor: Color(0xFFF5FCF9),
                             contentPadding: const EdgeInsets.symmetric(
@@ -207,7 +207,7 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ),
                         ElevatedButton(
-                          onPressed: _login,
+                          onPressed: () => _login(context),
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
                             backgroundColor: const Color(0xFF4E2B80),
@@ -275,18 +275,22 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  void _login() async {
+  void _login(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       final user = await _authService.login(
-        _emailController.text,
+        _matriculaController.text,
         _passwordController.text,
       );
       if (user != null) {
         Navigator.push(
-          context as BuildContext,
+          context,
           MaterialPageRoute(builder: (_) => HomeScreen()),
         );
+      } else{
+        showErrorAlert(context, "Matrícula ou senha incorretos.");
       }
+    } else{
+      showErrorAlert(context, "Matrícula ou senha incorretos.");
     }
   }
 

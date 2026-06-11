@@ -3,33 +3,39 @@ import '../core/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
+import 'dart:io';
+import 'package:http/io_client.dart';
 
 class AuthService{
   final userDao _userDAO = userDao();
-  final String _baseUrl = "https://192.168.100.35:8080/poow2";
+  final String _baseUrl = "http://10.0.2.2:8080/poow2";
   final _storage = const FlutterSecureStorage();
 
   User? usuLogado;
 
   Future<bool> register(User usuario) async{
     print("Entrou em register");
-    final response = await http.post(
+    final client = getMyNewClient();
+    final response = await client.post(
       Uri.parse('$_baseUrl/usuarios'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(usuario.toMap())
     );
     print("recebeu status ${response.statusCode}");
-    return response.statusCode == 200;
+    return response.statusCode == 200 || response.statusCode == 201;
   }
 
-  Future<bool?> login(String email, String senha) async{
-    final response = await http.post(
+  Future<bool?> login(String matricula, String senha) async{
+    final client = getMyNewClient();
+    final response = await client.post(
       Uri.parse('$_baseUrl/login'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'email': email, 'senha': senha})
+      body: jsonEncode({'matricula': matricula, 'senha': senha})
     );
-    if(response.statusCode == 200){
-      String token = jsonDecode(response.body)['accessToken'];
+    print("Statusresponse ${response.statusCode}");
+    if(response.statusCode == 200 || response.statusCode == 201){
+      print("response body: ${response.body}");
+      String token = jsonDecode(response.body)['token'];
       await _storage.write(key: 'jwt_token', value: token);
       return true;
     }
@@ -56,6 +62,13 @@ class AuthService{
 
   Future<User?> loginDao(String email, String password) async {
     return await _userDAO.getUser(email, password);
+  }
+
+  IOClient getMyNewClient() {
+    final HttpClient httpClient = HttpClient()
+      ..badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
+
+    return IOClient(httpClient);
   }
 
 }

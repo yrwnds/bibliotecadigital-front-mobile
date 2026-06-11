@@ -51,19 +51,6 @@ class AuthService{
     await _storage.delete(key: 'jwt_token');
   }
 
-  Future<bool> registerDao(User user) async {
-    try {
-      await _userDAO.insertUser(user);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  Future<User?> loginDao(String email, String password) async {
-    return await _userDAO.getUser(email, password);
-  }
-
   IOClient getMyNewClient() {
     final HttpClient httpClient = HttpClient()
       ..badCertificateCallback = ((X509Certificate cert, String host, int port) => true);

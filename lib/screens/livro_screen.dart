@@ -14,6 +14,9 @@ import '../core/dao/categoriaDAO.dart';
 import '../core/dao/emprestimoDAO.dart';
 import '../core/dao/livroDAO.dart';
 import '../core/models/emprestimo.dart';
+import '../service/categoria_service.dart';
+import '../service/emprestimo_service.dart';
+import '../service/livro_service.dart';
 
 class LivroScreen extends StatefulWidget {
   const LivroScreen({super.key});
@@ -23,11 +26,38 @@ class LivroScreen extends StatefulWidget {
 }
 
 class _LivroScreenState extends State<LivroScreen> {
-  List<Livro> livros = [];
-  List<Categoria> categorias = [];
-  List<Emprestimo> emprestimos = [];
+  final LivroService _livroService = LivroService();
+  final CategoriaService _categoriaService = CategoriaService();
+  final EmprestimoService _emprestimoService = EmprestimoService();
+  final AuthService _authService = AuthService();
 
-  User? _usuLogado;
+  late Future<List<Livro>> livros;
+  late Future<List<Categoria>> categorias;
+  late Future<List<Emprestimo>> emprestimos;
+
+  late Future<String?> token = _authService.getToken();
+
+  late User _usuLogado;
+
+
+  @override
+  void initState() {
+    super.initState();
+    livros = _livroService.getLivros();
+    emprestimos = _emprestimoService.getEmprestimos();
+    categorias = _categoriaService.getCategorias();
+    _usuLogado =
+  }
+
+  void _refresh() {
+    setState(() {
+      livros = _livroService.getLivros();
+      emprestimos = _emprestimoService.getEmprestimos();
+      categorias = _categoriaService.getCategorias();
+    });
+  }
+
+
 
   bool loading = true;
 

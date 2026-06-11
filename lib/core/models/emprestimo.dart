@@ -56,4 +56,21 @@ class Emprestimo {
       status: map['status'],
     );
   }
+
+  factory Emprestimo.fromMapGet(Map<String, dynamic> map){
+    return Emprestimo(
+      id: map['emprestimo_id'] ?? map['id'],
+
+      livro_ISBN: map['livro_ISBN'],
+      usuario_id: map['usuario_id'],
+
+      livro: null,
+      usuario: null,
+
+      datapego: DateTime.parse(map['datapego']),
+      dataprazo: DateTime.parse(map['dataprazo']),
+
+      status: map['status'],
+    );
+  }
 }

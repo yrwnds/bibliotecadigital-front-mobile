@@ -5,7 +5,6 @@ class User{
   final String email;
   final String senha;
   final String? imagem_path;
-  final int qt_livros_emprestados;
   final String identificador;
 
   User({
@@ -15,7 +14,6 @@ class User{
     required this.email,
     required this.senha,
     required this.imagem_path,
-    required this.qt_livros_emprestados,
     required this.identificador
     });
 
@@ -27,7 +25,6 @@ class User{
       'email': email,
       'senha': senha,
       'imagem_path': imagem_path,
-      'qt_livros_emprestados': qt_livros_emprestados,
       'identificador': identificador
     };
   }
@@ -40,7 +37,6 @@ class User{
       email: map['email'],
       senha: map['senha'],
       imagem_path: map['imagem_path'],
-      qt_livros_emprestados: map['qt_livros_emprestados'],
       identificador: map['identificador']
     );
   }

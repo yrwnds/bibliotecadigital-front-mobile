@@ -21,11 +21,13 @@ class EmprestimoService {
   Future<List<Emprestimo>> getEmprestimos() async {
     final headers =  await _getHeaders();
     final response = await http.get(
-        Uri.parse(_baseUrl), headers: headers);
+        Uri.parse('$_baseUrl/listar'), headers: headers);
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       return data.map((json) => Emprestimo.fromMapGet(json)).toList();
     } else {
+      print('STATUSCODE: ${response.statusCode}');
+      print('RESPONSE: ${response.body}');
       throw Exception('Falha ao carregar livros');
     }
   }

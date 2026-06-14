@@ -21,7 +21,7 @@ class CategoriaService {
   Future<List<Categoria>> getCategorias() async {
     final headers =  await _getHeaders();
     final response = await http.get(
-        Uri.parse(_baseUrl), headers: headers);
+        Uri.parse('$_baseUrl/listar'), headers: headers);
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       return data.map((json) => Categoria.fromMap(json)).toList();

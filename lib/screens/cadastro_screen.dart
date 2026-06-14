@@ -422,7 +422,6 @@ class _CadastroScreenState extends State<CadastroScreen> {
           senha: _passwordController.text,
           email: _emailController.text,
           imagem_path: _imageFile?.path,
-          qt_livros_emprestados: 0,
           identificador: 'USER'
       );
       try {

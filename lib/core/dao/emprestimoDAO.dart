@@ -22,8 +22,8 @@ class EmprestimoDao {
       datapego: data,
       dataprazo: dataprazo,
       status: 'ATIVO',
-      livro_ISBN: livro.isbn!,
-      usuario_id: usuario.id!,
+    //  livro_ISBN: livro.isbn!,
+   //   usuario_id: usuario.id!,
     );
 
     final result = await db.insert(table, e.toMap());
@@ -71,7 +71,7 @@ class EmprestimoDao {
       'livros',
       {'n_disponivel': emprestimo.livro!.n_disponivel + 1},
       where: 'isbn = ?',
-      whereArgs: [emprestimo.livro_ISBN],
+ //     whereArgs: [emprestimo.livro_ISBN],
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 

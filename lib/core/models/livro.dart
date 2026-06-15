@@ -4,7 +4,7 @@ class Livro {
   final int? isbn;
   final String titulo;
   final String autor;
-  final String anopublicado;
+  final int anopublicado;
 
   final String? imagemPath;
   final String? pdfPath;
@@ -12,7 +12,7 @@ class Livro {
   int n_exemplares;
   int n_disponivel;
 
-  Categoria? categoria;
+  Categoria categoria;
 
   Livro({
     this.isbn,
@@ -21,7 +21,7 @@ class Livro {
     required this.anopublicado,
     required this.n_exemplares,
     required this.n_disponivel,
-    this.categoria,
+    required this.categoria,
     required this.imagemPath,
     required this.pdfPath
   });
@@ -34,7 +34,7 @@ class Livro {
       'anopublicado': anopublicado,
       'n_exemplares': n_exemplares,
       'n_disponivel': n_disponivel,
-      'categoria': categoria,
+      'categoria': categoria.toMap(),
       'imagemPath' : imagemPath,
       'pdfPath' : pdfPath
     };
@@ -48,7 +48,7 @@ class Livro {
       anopublicado: map['anopublicado'],
       n_exemplares: map['n_exemplares'] ?? 0,
       n_disponivel: map['n_disponivel'] ?? 0,
-      categoria: map['categoria'],
+      categoria: Categoria.fromMap(map['categoria']),
       imagemPath: map['imagemPath'],
       pdfPath: map['pdfPath']
     );

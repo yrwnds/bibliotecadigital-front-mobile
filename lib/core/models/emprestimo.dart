@@ -7,11 +7,8 @@ import 'livro.dart';
 class Emprestimo {
   final int? id;
 
-  Livro? livro;
-  final int livro_ISBN;
-
-  User? usuario;
-  final int usuario_id;
+  Livro livro;
+  User usuario;
 
   final DateTime datapego;
   final DateTime dataprazo;
@@ -19,10 +16,8 @@ class Emprestimo {
 
   Emprestimo({
     this.id,
-    this.livro,
-    required this.livro_ISBN,
-    this.usuario,
-    required this.usuario_id,
+    required this.usuario,
+    required this.livro,
     required this.datapego,
     required this.dataprazo,
     required this.status,
@@ -31,8 +26,8 @@ class Emprestimo {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'livro_ISBN': livro_ISBN,
-      'usuario_id': usuario_id,
+      'livro': livro.toMap(),
+      'usuario': usuario.toMap(),
       'datapego': datapego.toString(),
       'dataprazo': dataprazo.toString(),
       'status': status,
@@ -43,9 +38,6 @@ class Emprestimo {
 
     return Emprestimo(
       id: map['emprestimo_id'] ?? map['id'],
-
-      livro_ISBN: map['livro_ISBN'],
-      usuario_id: map['usuario_id'],
 
       livro: livro,
       usuario: usuario,
@@ -61,11 +53,8 @@ class Emprestimo {
     return Emprestimo(
       id: map['emprestimo_id'] ?? map['id'],
 
-      livro_ISBN: map['livro_ISBN'],
-      usuario_id: map['usuario_id'],
-
-      livro: null,
-      usuario: null,
+      livro: Livro.fromMap(map['livro']),
+      usuario: User.fromMap(map['usuario']),
 
       datapego: DateTime.parse(map['datapego']),
       dataprazo: DateTime.parse(map['dataprazo']),

@@ -20,19 +20,20 @@ class LivroService {
   Future<List<Livro>> getLivros() async {
     final headers =  await _getHeaders();
     final response = await http.get(
-        Uri.parse('$_baseUrl/listar'), headers: headers);
+        Uri.parse('$_baseUrl/listar/titulo'), headers: headers);
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       return data.map((json) => Livro.fromMap(json)).toList();
     } else {
+      print("RESPONSE: ${response.body}");
       throw Exception('Falha ao carregar livros');
     }
   }
 
-  Future<List<Livro>> getLivrosCategoria(String id) async{
+  Future<List<Livro>> getLivrosCategoria(String nome) async{
     final headers = await _getHeaders();
     final response = await http.get(
-      Uri.parse('$_baseUrl/buscar/categoria/$id'), headers: headers
+      Uri.parse('$_baseUrl/buscar/categoria/$nome'), headers: headers
     );
     if(response.statusCode == 200){
       final List<dynamic> data = jsonDecode(response.body);
@@ -51,7 +52,7 @@ class LivroService {
       final List<dynamic> data = jsonDecode(response.body);
       return data.map((json) => Livro.fromMap(json)).toList();
     } else{
-      print('RESPONSE LIVROS: ${response.body}');
+      print("RESPONSE: ${response.body}");
       throw Exception('Falha ao carregar livros');
     }
   }

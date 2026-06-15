@@ -1,18 +1,18 @@
 import 'package:bibliotecadigital_mobile/core/dao/emprestimoDAO.dart';
+import 'package:bibliotecadigital_mobile/service/auth_service.dart';
+import 'package:bibliotecadigital_mobile/service/emprestimo_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../core/models/emprestimo.dart';
+import 'login_screen.dart';
 
 class EmprestimoScreen extends StatefulWidget {
-
   const EmprestimoScreen({super.key});
 
   @override
   State<EmprestimoScreen> createState() => _EmprestimoScreenState();
 }
-
-
 
 void showSuccessDialog(BuildContext context) {
   showDialog(
@@ -60,36 +60,68 @@ void showErrorAlert(BuildContext context, String errorMessage) {
 }
 
 class _EmprestimoScreenState extends State<EmprestimoScreen> {
-  List<Emprestimo> emprestimos = [];
-  bool loading = true;
+  late Future<List<Emprestimo>> emprestimos;
+  final EmprestimoService _emprestimoService = EmprestimoService();
+  final AuthService _authService = AuthService();
 
-  Future<void> getEmprestimo() async {
-    loading = true;
-    try {
-      emprestimos = await EmprestimoDao().getEmprestimosAtivosByUser(
-        int.parse("1"),
-      );
-    } finally {
-      loading = false;
+  Future<void> checkToken() async {
+    String? token = await _authService.getToken();
+    if (token == null || token.isEmpty) {
+      Navigator.push(context, MaterialPageRoute(builder: (_) => LoginScreen()));
     }
-    setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
-    getEmprestimo();
+    emprestimos = _emprestimoService.getEmprestimos();
+    checkToken();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Empréstimos")),
-      body: loading
-          ? Center(child: CircularProgressIndicator(color: Colors.blue))
-          : ListView.builder(
-              itemCount: emprestimos.length,
+      body: FutureBuilder<List<Emprestimo>>(
+        future: emprestimos,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Erro: ${snapshot.error}'));
+          }
+          if (snapshot.data!.isEmpty) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.search_off_rounded,
+                      size: 80,
+                      color: Theme.of(context).disabledColor,
+                    ),
+                    const SizedBox(height: 24),
+
+                    Text(
+                      "Não há empréstimos para mostrar.",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.grey[600],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
+                final emp = snapshot.data![index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16.0,
@@ -106,8 +138,14 @@ class _EmprestimoScreenState extends State<EmprestimoScreen> {
                           child: Icon(Icons.book),
                         ),
                         ListTile(
-                          title: Text(emprestimos[index].livro!.titulo),
-                          subtitle: Text(emprestimos[index].livro!.autor),
+                          title: Text(
+                            emp.livro.titulo,
+                            style: TextStyle(
+                              fontSize: 24.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          subtitle: Text(emp.livro.autor),
                         ),
                         Container(
                           padding: EdgeInsets.all(16),
@@ -115,11 +153,11 @@ class _EmprestimoScreenState extends State<EmprestimoScreen> {
                           child: Column(
                             children: [
                               Text(
-                                "Você pegou este livro em ${emprestimos[index].datapego}",
+                                "Você pegou este livro em ${emp.datapego}",
                                 textAlign: TextAlign.left,
                               ),
                               Text(
-                                "Prazo de devolução em ${emprestimos[index].dataprazo}",
+                                "Prazo de devolução em ${emp.dataprazo}",
                                 textAlign: TextAlign.left,
                               ),
                             ],
@@ -128,9 +166,7 @@ class _EmprestimoScreenState extends State<EmprestimoScreen> {
                         TextButton(
                           onPressed: () async {
                             try {
-                              EmprestimoDao().atualizarEmprestimo(
-                                emprestimos[index],
-                              );
+                              _emprestimoService.atualizarEmprestimo(emp);
                             } catch (e) {
                               showErrorAlert(context, "Ocorreu um erro.");
                             } finally {
@@ -144,14 +180,15 @@ class _EmprestimoScreenState extends State<EmprestimoScreen> {
                         TextButton(
                           onPressed: () async {
                             try {
-                              EmprestimoDao().devolverLivro(emprestimos[index]);
+                              _emprestimoService.devolver(emp);
+                              showSuccessDialog(context);
                             } catch (e) {
                               showErrorAlert(context, "Ocorreu um erro.");
-                            } finally {
-                              setState(() {
-                                showSuccessDialog(context);
-                              });
                             }
+                            setState(() {
+                              emprestimos = _emprestimoService.getEmprestimos();
+                            });
+
                           },
                           child: Text("Devolver"),
                         ),
@@ -160,7 +197,10 @@ class _EmprestimoScreenState extends State<EmprestimoScreen> {
                   ),
                 );
               },
-            ),
+            );
+          }
+        },
+      ),
     );
   }
 }

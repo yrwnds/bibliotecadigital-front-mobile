@@ -274,7 +274,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
           matricula: _matriculaController.text,
           senha: _passwordController.text,
           email: _emailController.text,
-          imagem_path: _imageFile?.path,
+          imagem_Path: _imageFile?.path,
           identificador: 'USER'
       );
       try {

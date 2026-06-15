@@ -178,13 +178,13 @@ class _LivroScreenState extends State<LivroScreen> {
                   decoration: BoxDecoration(color: const Color(0xFF4E2B80)),
                   accountEmail: Text(user.email),
                   accountName: Text(user.nome),
-                  currentAccountPicture: user.imagem_path != null
+                  currentAccountPicture: user.imagem_Path != null
                       ? CircleAvatar(
                           child: Image.file(
-                            File(user.imagem_path!),
+                            File(user.imagem_Path!),
                             width: 50,
                             height: 50,
-                            fit: BoxFit.cover,
+                            fit: BoxFit.fill,
                           ),
                         )
                       : CircleAvatar(

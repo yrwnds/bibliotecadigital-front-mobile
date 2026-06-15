@@ -1,8 +1,10 @@
 import 'package:bibliotecadigital_mobile/core/dao/emprestimoDAO.dart';
 import 'package:bibliotecadigital_mobile/service/auth_service.dart';
 import 'package:bibliotecadigital_mobile/service/emprestimo_service.dart';
+import 'package:bibliotecadigital_mobile/service/pdf_viewer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 
 import '../core/models/emprestimo.dart';
 import 'login_screen.dart';
@@ -108,9 +110,9 @@ class _EmprestimoScreenState extends State<EmprestimoScreen> {
 
                     Text(
                       "Não há empréstimos para mostrar.",
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[600],
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -138,12 +140,32 @@ class _EmprestimoScreenState extends State<EmprestimoScreen> {
                           child: Icon(Icons.book),
                         ),
                         ListTile(
-                          title: Text(
-                            emp.livro.titulo,
-                            style: TextStyle(
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                children: [
+                                  Text(
+                                    emp.livro.titulo,
+                                    style: TextStyle(
+                                      fontSize: 24.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  ElevatedButton(onPressed: (){
+                                    if(emp.livro.pdfPath != null){
+                                      LocalPdfViewer(targetPath: emp.livro.pdfPath!);
+                                    } else{
+                                      showErrorAlert(context, "Este livro não possui um PDF.");
+                                    }
+                                  }, child: Icon(Icons.picture_as_pdf))
+                                ],
+                              )
+                            ],
                           ),
                           subtitle: Text(emp.livro.autor),
                         ),
@@ -151,14 +173,17 @@ class _EmprestimoScreenState extends State<EmprestimoScreen> {
                           padding: EdgeInsets.all(16),
                           alignment: Alignment.bottomLeft,
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Você pegou este livro em ${emp.datapego}",
+                                "PEGO - ${emp.datapego}",
                                 textAlign: TextAlign.left,
+                                style: TextStyle(color: Colors.grey),
                               ),
                               Text(
-                                "Prazo de devolução em ${emp.dataprazo}",
+                                "PRAZO - ${emp.dataprazo}",
                                 textAlign: TextAlign.left,
+                                style: TextStyle(color: Colors.grey),
                               ),
                             ],
                           ),
@@ -188,7 +213,6 @@ class _EmprestimoScreenState extends State<EmprestimoScreen> {
                             setState(() {
                               emprestimos = _emprestimoService.getEmprestimos();
                             });
-
                           },
                           child: Text("Devolver"),
                         ),

@@ -4,7 +4,7 @@ class User{
   final String matricula;
   final String email;
   final String senha;
-  final String? imagem_Path;
+  final String? imagem_path;
   final String identificador;
 
   User({
@@ -13,7 +13,7 @@ class User{
     required this.matricula,
     required this.email,
     required this.senha,
-    required this.imagem_Path,
+    this.imagem_path,
     required this.identificador
     });
 
@@ -24,7 +24,7 @@ class User{
       'matricula': matricula,
       'email': email,
       'senha': senha,
-      'imagem_Path': imagem_Path,
+      'imagem_path': imagem_path,
       'identificador': identificador
     };
   }
@@ -36,7 +36,7 @@ class User{
       matricula: map['matricula'],
       email: map['email'],
       senha: map['senha'],
-      imagem_Path: map['imagem_Path'],
+      imagem_path: map['imagem_path'],
       identificador: map['identificador']
     );
   }

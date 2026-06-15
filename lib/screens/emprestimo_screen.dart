@@ -1,10 +1,8 @@
-import 'package:bibliotecadigital_mobile/core/dao/emprestimoDAO.dart';
 import 'package:bibliotecadigital_mobile/service/auth_service.dart';
 import 'package:bibliotecadigital_mobile/service/emprestimo_service.dart';
-import 'package:bibliotecadigital_mobile/service/pdf_viewer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:pdfrx/pdfrx.dart';
 
 import '../core/models/emprestimo.dart';
 import 'login_screen.dart';
@@ -14,6 +12,61 @@ class EmprestimoScreen extends StatefulWidget {
 
   @override
   State<EmprestimoScreen> createState() => _EmprestimoScreenState();
+}
+
+void openPdf(BuildContext context, String pdfpath) {
+  showDialog(
+    context: context,
+    useSafeArea: false,
+    builder: (context) {
+      return Dialog.fullscreen(
+        child: Container(
+          child: Column(
+            children: [
+              AppBar(
+                title: const Text('PDF'),
+                automaticallyImplyLeading: false,
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: PdfViewer.uri(
+                  Uri.parse(pdfpath),
+                  params: PdfViewerParams(
+                    layoutPages: (pages, params) {
+                      final height = pages.fold(0.0, (prev, page) => prev > page.height ? prev : page.height) + params.margin * 2;
+                      final pageLayouts = <Rect>[];
+                      double x = params.margin;
+
+                      for (var page in pages) {
+                        pageLayouts.add(
+                          Rect.fromLTWH(
+                            x,
+                            (height - page.height) / 2,
+                            page.width,
+                            page.height,
+                          ),
+                        );
+                        x += page.width + params.margin;
+                      }
+                      return PdfPageLayout(
+                        pageLayouts: pageLayouts,
+                        documentSize: Size(x, height),
+                      );
+                    },
+                  ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
 
 void showSuccessDialog(BuildContext context) {
@@ -134,10 +187,15 @@ class _EmprestimoScreenState extends State<EmprestimoScreen> {
                     child: Column(
                       children: [
                         Container(
-                          height: 200,
+                          height: 400,
                           width: double.infinity,
-                          color: const Color(0xFF4E2B80),
-                          child: Icon(Icons.book),
+                          color: Colors.black,
+                          child: emp.livro.imagem_path != null
+                              ? Image.network(
+                                  emp.livro.imagem_path!,
+                                  fit: BoxFit.contain,
+                                )
+                              : Icon(Icons.book, size: 50, color: Colors.white),
                         ),
                         ListTile(
                           title: Row(
@@ -156,15 +214,21 @@ class _EmprestimoScreenState extends State<EmprestimoScreen> {
                               ),
                               Column(
                                 children: [
-                                  ElevatedButton(onPressed: (){
-                                    if(emp.livro.pdfPath != null){
-                                      LocalPdfViewer(targetPath: emp.livro.pdfPath!);
-                                    } else{
-                                      showErrorAlert(context, "Este livro não possui um PDF.");
-                                    }
-                                  }, child: Icon(Icons.picture_as_pdf))
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      if (emp.livro.pdf_path != null) {
+                                        openPdf(context, emp.livro.pdf_path!);
+                                      } else {
+                                        showErrorAlert(
+                                          context,
+                                          "Este livro não possui um PDF.",
+                                        );
+                                      }
+                                    },
+                                    child: Icon(Icons.picture_as_pdf),
+                                  ),
                                 ],
-                              )
+                              ),
                             ],
                           ),
                           subtitle: Text(emp.livro.autor),

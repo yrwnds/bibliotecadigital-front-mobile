@@ -127,8 +127,8 @@ class _LivroScreenState extends State<LivroScreen> {
             ),
             child: TextButton(
               onPressed: () async {
-               livros = _livroService.getLivros();
-               setState(() {});
+                livros = _livroService.getLivros();
+                setState(() {});
               },
               child: Text(
                 "Todos",
@@ -146,9 +146,11 @@ class _LivroScreenState extends State<LivroScreen> {
             ),
             child: TextButton(
               onPressed: () async {
-               setState(() {
-                 livros = _livroService.getLivrosCategoria("${categoria.nome}");
-               });
+                setState(() {
+                  livros = _livroService.getLivrosCategoria(
+                    "${categoria.nome}",
+                  );
+                });
               },
               child: Text(categoria.nome),
             ),
@@ -174,26 +176,37 @@ class _LivroScreenState extends State<LivroScreen> {
               }
               if (snapshot.hasData) {
                 final user = snapshot.data!;
-                return UserAccountsDrawerHeader(
-                  decoration: BoxDecoration(color: const Color(0xFF4E2B80)),
-                  accountEmail: Text(user.email),
-                  accountName: Text(user.nome),
-                  currentAccountPicture: user.imagem_Path != null
-                      ? CircleAvatar(
-                          child: Image.file(
-                            File(user.imagem_Path!),
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.fill,
-                          ),
-                        )
-                      : CircleAvatar(
-                          backgroundColor: const Color(0xFF885C97),
-                          child: Icon(
-                            Icons.person,
-                            color: const Color(0xFF4E2B80),
-                          ),
-                        ),
+                return Column(
+                  children: [
+                    UserAccountsDrawerHeader(
+                      decoration: BoxDecoration(color: const Color(0xFF4E2B80)),
+                      accountEmail: Text(user.email),
+                      accountName: Text(user.nome),
+                      currentAccountPicture: user.imagem_path != null
+                          ? CircleAvatar(
+                              backgroundImage: FileImage(File(user.imagem_path!)),
+                            )
+                          : CircleAvatar(
+                              backgroundColor: const Color(0xFF885C97),
+                              child: Icon(
+                                Icons.person,
+                                color: const Color(0xFF4E2B80),
+                              ),
+                            ),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.logout),
+                      title: Text("Logout"),
+                      onTap: () {
+                        Navigator.pop(context);
+                        _authService.logout();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginScreen()),
+                        );
+                      },
+                    ),
+                  ],
                 );
               }
               return const Center(child: CircularProgressIndicator());
@@ -263,9 +276,9 @@ class _LivroScreenState extends State<LivroScreen> {
 
                     Text(
                       "Nenhum resultado encontrado.",
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[600],
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -287,15 +300,15 @@ class _LivroScreenState extends State<LivroScreen> {
                     child: Column(
                       children: [
                         Container(
-                          height: 200,
+                          height: 400,
                           width: double.infinity,
-                          color: const Color(0xFF4E2B80),
-                          child: livro.imagemPath != null
-                              ? Image.file(
-                                  File(livro.imagemPath!),
-                                  fit: BoxFit.cover,
+                          color: Colors.black,
+                          child: livro.imagem_path != null
+                              ? Image.network(
+                                  livro.imagem_path!,
+                                  fit: BoxFit.contain,
                                 )
-                              : Icon(Icons.book),
+                              : Icon(Icons.book, size: 50, color: Colors.white),
                         ),
                         ListTile(
                           title: Text(
